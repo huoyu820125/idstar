@@ -27,12 +27,10 @@ public class IdPageService {
      * 最大页码
      * 页码占36bit
      */
-    private static long maxPageNo = 0xfffffffffL;
+    private static long maxPageNo = 0xfffffffL;
 
     @Value("${data.path}")
     private String dataPath;
-    @Value("${data.filename}")
-    private String dataFileName;
 
     /**
      * 空闲页
@@ -42,7 +40,12 @@ public class IdPageService {
      * @author sq
      * @date 2019/4/24 下午4:32
      */
-    public Long idle() {
+    public Long idle(Integer version) {
+        if (version < 0 || version > 255) {
+            throw new RuntimeException("invalid version: version must be between 0 and 255");
+        }
+
+        String dataFileName = "nextPageNo.v" + version.toString();
         Long pageNo = 0L;
         synchronized (IdPageService.class) {
             String fileFullPath = getJarFullPath() + File.separator + dataPath;

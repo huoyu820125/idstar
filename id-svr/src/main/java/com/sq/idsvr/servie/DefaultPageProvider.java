@@ -20,10 +20,10 @@ public class DefaultPageProvider implements IPageProvider {
     LoadBalancerClient loadBalancerClient;
 
     @Override
-    public Long idlePageNo() {
+    public Long idlePageNo(Integer version) {
         RestTemplate restTemplate = new RestTemplate();
         ServiceInstance svr = loadBalancerClient.choose("id-page-provider");
-        String url = String.format("http://%s:%s", svr.getHost(), svr.getPort()) + "/id/page/idle";
+        String url = String.format("http://%s:%s%s?version=%d", svr.getHost(), svr.getPort(), "/id/page/idle", version);
         return restTemplate.getForObject(url, Long.class);
     }
 }

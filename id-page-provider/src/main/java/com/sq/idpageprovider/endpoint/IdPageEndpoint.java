@@ -4,7 +4,10 @@ import com.sq.idpageprovider.service.IdPageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.cloud.client.discovery.DiscoveryClient;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -25,12 +28,13 @@ public class IdPageEndpoint {
     @Autowired
     IdPageService idPageService;
 
-    @RequestMapping("id/page/idle")
-    public Long idle() {
+    @RequestMapping(value = "id/page/idle", method = RequestMethod.GET)
+    public Long idle(@RequestParam("version") Integer version) {
         List<ServiceInstance> svrs = client.getInstances("id-page-provider");
         if (svrs.size() > 1) {
             throw new RuntimeException("发现" + svrs.size() + "个提供者服务节点，只能部署1个节点");
         }
-        return idPageService.idle();
+
+        return idPageService.idle(version);
     }
 }

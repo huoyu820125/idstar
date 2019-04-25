@@ -16,5 +16,5 @@ public interface IPageProvider {
      * @author sq
      * @date 2019/4/24 下午3:58
      */
-    Long idlePageNo();
+    Long idlePageNo(Integer version);
 }

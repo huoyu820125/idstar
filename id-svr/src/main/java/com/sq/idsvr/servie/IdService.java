@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
  * @version 1.0
  * @className IdService
  * @description id服务
- *      id = 1位留空 + 36位页码 + 27位id
+ *      id = 1位留空 + 8位版本号 + 28位页码 + 27位id
  *      27位id资源用完，从page-svr获取最新可用页的页码
  * @date 2019/4/24 上午11:36
  */
@@ -49,6 +49,11 @@ public class IdService implements InitializingBean {
     @Value("${page.provider.instance.name:defaultPageProvider}")
     String pageProviderClass;
 
+    @Value("${id.version:default 0}")
+    Integer idVersion;
+
+    Long version;
+
     @Autowired
     ApplicationObjectSupport applicationObjectSupport;
 
@@ -56,6 +61,9 @@ public class IdService implements InitializingBean {
     public void afterPropertiesSet() throws Exception {
         ApplicationContext context = applicationObjectSupport.getApplicationContext();
         pageProvider = (IPageProvider)context.getBean(pageProviderClass);
+
+        version = idVersion.longValue();
+        version = version << 55;
     }
 
     /**
@@ -75,7 +83,7 @@ public class IdService implements InitializingBean {
             curId++;
         }
 
-        return pageNo + curId;
+        return version + pageNo + curId;
     }
 
     /**
@@ -92,7 +100,7 @@ public class IdService implements InitializingBean {
                 return false;
             }
             //更新页码
-            pageNo = pageProvider.idlePageNo();
+            pageNo = pageProvider.idlePageNo(idVersion);
             pageNo = pageNo << 27;
             //重置id
             curId = 0;
