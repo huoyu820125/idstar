@@ -1,9 +1,8 @@
 package com.sq.idsvr.endpoint;
 
-import com.sq.idsvr.servie.IdService;
+import com.sq.idstar.service.IdStar;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -23,10 +22,10 @@ public class IdEndpoint {
     DiscoveryClient discoveryClient;
 
     @Autowired
-    IdService idService;
+    IdStar idStar;
 
     @RequestMapping("/id/next")
     public Long nextId(){
-        return idService.nextId();
+        return idStar.nextId();
     }
 }

@@ -9,9 +9,9 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.sq</groupId>
-	<artifactId>id-svr</artifactId>
+	<artifactId>id-page</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>id-svr</name>
+	<name>id-page</name>
 
 	<properties>
 		<java.version>1.8</java.version>
@@ -19,11 +19,6 @@
 	</properties>
 
 	<dependencies>
-		<dependency>
-			<groupId>com.sq</groupId>
-			<artifactId>id-star</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
-		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-actuator</artifactId>
@@ -44,7 +39,6 @@
 			<groupId>org.slf4j</groupId>
 			<artifactId>log4j-over-slf4j</artifactId>
 		</dependency>
-
 
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
