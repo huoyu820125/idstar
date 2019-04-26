@@ -7,6 +7,8 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ApplicationObjectSupport;
 import org.springframework.stereotype.Service;
 
+import java.util.concurrent.atomic.AtomicInteger;
+
 /**
  * @author sq
  * @version 1.0
@@ -32,12 +34,12 @@ public class IdService implements InitializingBean {
     private static int maxId = 0x7ffffff;
 
     /**
-     * id
+     * 上次使用过的id
      * 27bit，占低位
      * 最大值maxId
      * 初始化为最大值，触使服务在第一次响应id请求时，更新页码
      */
-    private static int curId = maxId;
+    private static AtomicInteger lastId = new AtomicInteger(maxId);
 
     /**
      * id分页提供者
@@ -75,12 +77,12 @@ public class IdService implements InitializingBean {
      * @date 2019/4/24 下午12:06
      */
     public Long nextId(){
-        curId++;
+        int curId = lastId.addAndGet(1);
         while (maxId < curId) {
-            if (nextPage()) {
+            if (nextPage(curId)) {
                 break;
             }
-            curId++;
+            curId = lastId.addAndGet(1);
         }
 
         return version + pageNo + curId;
@@ -94,7 +96,7 @@ public class IdService implements InitializingBean {
      * @author sq
      * @date 2019/4/24 下午3:52
      */
-    private boolean nextPage() {
+    private boolean nextPage(int curId) {
         synchronized (IdService.class) {
             if (maxId >= curId) {
                 return false;
@@ -103,7 +105,7 @@ public class IdService implements InitializingBean {
             pageNo = pageProvider.idlePageNo(idVersion);
             pageNo = pageNo << 27;
             //重置id
-            curId = 0;
+            lastId.set(0);
         }
 
         return true;
