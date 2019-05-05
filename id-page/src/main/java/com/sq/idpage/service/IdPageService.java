@@ -121,7 +121,8 @@ public class IdPageService {
 //            logger.info("jar相对路径(IDE调试下不可用，真实运行时是jar相对路径)="+jar_path);
 
         String jarFullPath = IdPageService.class.getProtectionDomain().getCodeSource().getLocation().getPath();
-//            logger.info("jar绝对路径(IDE调试下是不带target/class位置，实际运行时是jar绝对路径+file:前缀)="+jarFullPath);
+        jarFullPath = jarFullPath.replace("/", File.separator);
+//        logger.info("jar绝对路径(IDE调试下是不带target/class位置，实际运行时是jar绝对路径+file:前缀)="+jarFullPath);
 
         if (!jarFullPath.contains(".jar")) {
             //ide中调试，取到的是class目录，target下
