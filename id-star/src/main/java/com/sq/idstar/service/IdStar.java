@@ -14,8 +14,8 @@ import java.util.concurrent.atomic.AtomicInteger;
  * @version 1.0
  * @className IdStar
  * @description id星球
- *      id = 1位留空 + 41位区号 + 6位种族编号 + 16位流水id
- *      27位id资源用完，从page-svr获取最新可用页的页码
+ *      id = 1位留空 + regionNoLen位区号 + raceNoLen位种族编号 + snLen位流水id
+ *      snLen位id资源用完，从redis获取最新可用地区编号
  * @date 2019/4/24 上午11:36
  */
 @Service
