@@ -27,7 +27,7 @@ public class IdPageEndpoint {
     @Autowired
     IdPageService idPageService;
 
-    @RequestMapping(value = "id/page/idle", method = RequestMethod.GET)
+    @RequestMapping(value = "idstar/region/noman", method = RequestMethod.GET)
     public Long idle(@RequestParam("version") Integer version) {
         List<ServiceInstance> svrs = client.getInstances("id-page-provider");
         if (svrs.size() > 1) {

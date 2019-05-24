@@ -25,7 +25,7 @@ public class IdEndpoint {
     @Autowired
     IdStar idStar;
 
-    @RequestMapping("/id/next")
+    @RequestMapping("/idstar/next")
     public Long nextId(@RequestParam("raceNo") Integer raceNo){
         return idStar.nextId(raceNo);
     }

@@ -117,7 +117,7 @@ public class IdStar implements InitializingBean {
 
         int curId = lastId.addAndGet(1);
         while (maxId < curId) {
-            if (nextPage(curId, raceNo)) {
+            if (moveToNMR(curId, raceNo)) {
                 curId = 0;
                 break;
             }
@@ -128,20 +128,20 @@ public class IdStar implements InitializingBean {
     }
 
     /**
-     * 进入下一页
+     * 进入无人区
      *
      * @param
-     * @return boolean 多线程并发时，只有一个线程的调用会进入下一页，其它线程的全部返回false
+     * @return boolean 多线程并发时，只有一个线程的调用会进入无人区，其它线程的全部返回false
      * @author sq
      * @date 2019/4/24 下午3:52
      */
-    private boolean nextPage(int curId, int raceNo) {
+    private boolean moveToNMR(int curId, int raceNo) {
         synchronized (IdStar.class) {
             if (maxId >= curId) {
                 return false;
             }
             //更新页码
-            regionNo = regionProvider.idleRegionNo(raceNo);
+            regionNo = regionProvider.noManRegionNo(raceNo);
             if (maxRegionNo <= regionNo) {
                 throw new RuntimeException("no resources: arrived last region");
             }

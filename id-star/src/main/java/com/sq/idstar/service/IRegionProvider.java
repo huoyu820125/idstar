@@ -9,10 +9,10 @@ public interface IRegionProvider {
     /**
      * author: SunQian
      * date: 2019/5/23 15:25
-     * title: 取一个空闲区号
+     * title: 取一个无人区区号
      * descritpion: TODO
      * @param raceNo 种族编号
      * return: 区号
      */
-    Long idleRegionNo(Integer raceNo);
+    Long noManRegionNo(Integer raceNo);
 }
