@@ -20,11 +20,11 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 @Service
 public class IdStar implements InitializingBean {
-    @Value("${idStart.idStruct.snLen:default 16}")
+    @Value("${idStart.idStruct.snLen:16}")
     Integer snLen;
-    @Value("${idStart.idStruct.raceNoLen:default 6}")
+    @Value("${idStart.idStruct.raceNoLen:6}")
     Integer raceNoLen;
-    @Value("${idStart.idStruct.regionNoLen:default 41}")
+    @Value("${idStart.idStruct.regionNoLen:41}")
     Integer regionNoLen;
 
 
@@ -63,7 +63,7 @@ public class IdStar implements InitializingBean {
     IRegionProvider regionProvider;
 
 
-    @Value("${idStart.regionProvider.instance.name:default defaultRegionProvider}")
+    @Value("${idStart.regionProvider.instance.name:defaultRegionProvider}")
     String regionProviderClass;
 
     @Autowired
