@@ -29,31 +29,31 @@ public class IdStar implements InitializingBean {
 
 
     /**
-     * 区号
-     * regionNo，占高位
-     */
-    private static long regionNo;
-
-    /**
      * 最大区号
      */
     private static long maxRegionNo;
     /**
      * 最大种族
      */
-    private static long maxRaceNo;
+    private static int maxRaceNo;
     /**
      * 最大id
      */
     private static int maxId;
 
     /**
-     * 上次使用过的id
+     * 所有种族当前区号
+     * regionNo，占高位
+     */
+    private static long[] regionNos;
+
+    /**
+     * 所有种族上次使用过的id
      * snLenbit，占低位
      * 最大值maxId
      * 初始化为最大值，触使服务在第一次响应id请求时，更新页码
      */
-    private static AtomicInteger lastId = new AtomicInteger(maxId);
+    private static AtomicInteger lastIds[];
 
     /**
      * id地区提供者
@@ -84,10 +84,15 @@ public class IdStar implements InitializingBean {
         }
 
         maxRegionNo = (1L << regionNoLen) - 1;
-        maxRaceNo = (1L << raceNoLen) - 1;
+        maxRaceNo = (1 << raceNoLen) - 1;
         maxId = (1 << snLen) - 1;
         //初始化为最大值，触使服务在第一次响应id请求时，更新页码
-        lastId.set(maxId);
+        lastIds = new AtomicInteger[maxRaceNo];
+        int i = 0;
+        for (i = 0; i < maxRaceNo; i++) {
+            lastIds[i] = new AtomicInteger(maxId);
+        }
+        regionNos = new long[maxRaceNo];
     }
 
     /**
@@ -115,16 +120,16 @@ public class IdStar implements InitializingBean {
             throw new RuntimeException("种族编号只能是：0~" + String.valueOf(maxRaceNo));
         }
 
-        int curId = lastId.addAndGet(1);
+        int curId = lastIds[raceNo].addAndGet(1);
         while (maxId < curId) {
             if (moveToNMR(curId, raceNo)) {
                 curId = 0;
                 break;
             }
-            curId = lastId.addAndGet(1);
+            curId = lastIds[raceNo].addAndGet(1);
         }
 
-        return regionNo + curId;
+        return regionNos[raceNo] + curId;
     }
 
     /**
@@ -141,15 +146,15 @@ public class IdStar implements InitializingBean {
                 return false;
             }
             //更新页码
-            regionNo = regionProvider.noManRegionNo(raceNo);
-            if (maxRegionNo <= regionNo) {
+            regionNos[raceNo] = regionProvider.noManRegionNo(raceNo);
+            if (maxRegionNo <= regionNos[raceNo]) {
                 throw new RuntimeException("no resources: arrived last region");
             }
-            regionNo = (regionNo << (raceNoLen + snLen))
+            regionNos[raceNo] = (regionNos[raceNo] << (raceNoLen + snLen))
                     + (raceNo << snLen);
 
             //重置id
-            lastId.set(0);
+            lastIds[raceNo].set(0);
         }
 
         return true;
