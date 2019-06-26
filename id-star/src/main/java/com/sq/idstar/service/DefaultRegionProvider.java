@@ -1,10 +1,7 @@
 package com.sq.idstar.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cloud.client.ServiceInstance;
-import org.springframework.cloud.client.loadbalancer.LoadBalancerClient;
+import com.sq.idstar.service.nbrestful.sdk.NBRestul;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
 
 /**
  * @author sq
@@ -16,9 +13,6 @@ import org.springframework.web.client.RestTemplate;
 @Service(value = "defaultRegionProvider")
 public class DefaultRegionProvider implements IRegionProvider {
 
-    @Autowired
-    LoadBalancerClient loadBalancerClient;
-
     /**
      * author: SunQian
      * date: 2019/5/23 15:25
@@ -29,9 +23,9 @@ public class DefaultRegionProvider implements IRegionProvider {
      */
     @Override
     public Long noManRegionNo(Integer raceNo) {
-        RestTemplate restTemplate = new RestTemplate();
-        ServiceInstance svr = loadBalancerClient.choose("id-page");
-        String url = String.format("http://%s:%s/%s?version=%d", svr.getHost(), svr.getPort(), "idstar/region/noman", raceNo);
-        return restTemplate.getForObject(url, Long.class);
+        NBRestul nbRestul = new NBRestul();
+        return nbRestul.addUriVariables("version", raceNo)
+                .get("id-page", Long.class, "idstar/region/noman");
     }
+
 }
