@@ -1,6 +1,6 @@
 package com.sq.idstar.service;
 
-import com.sq.idstar.service.nbrestful.sdk.NBRestul;
+import com.sq.idstar.service.nbrestful.sdk.NBRestful;
 import org.springframework.stereotype.Service;
 
 /**
@@ -23,8 +23,8 @@ public class DefaultRegionProvider implements IRegionProvider {
      */
     @Override
     public Long noManRegionNo(Integer raceNo) {
-        NBRestul nbRestul = new NBRestul();
-        return nbRestul.addUriVariables("version", raceNo)
+        NBRestful nbRestful = new NBRestful();
+        return nbRestful.addUriVariables("version", raceNo)
                 .get("id-page", Long.class, "idstar/region/noman");
     }
 

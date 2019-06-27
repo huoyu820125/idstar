@@ -11,7 +11,7 @@ import java.util.Map;
  * @CreateTime 2019/6/26 19:16
  * @Description: TODO
  */
-public class NBRestul {
+public class NBRestful {
 
     private Map<String, Object> uriVariables = new HashMap<>();
 
@@ -24,7 +24,7 @@ public class NBRestul {
      * @param value 参数值
      * return: 链式调用支持
      */
-    public NBRestul addUriVariables(String name, Object value) {
+    public NBRestful addUriVariables(String name, Object value) {
         uriVariables.put(name, value);
 
         return this;
