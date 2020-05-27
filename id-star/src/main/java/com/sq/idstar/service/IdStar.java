@@ -51,7 +51,7 @@ public class IdStar implements InitializingBean {
      * 所有种族上次使用过的id
      * snLenbit，占低位
      * 最大值maxId
-     * 初始化为最大值，触使服务在第一次响应id请求时，更新页码
+     * 初始化为最大值，触使服务在第一次响应id请求时，更新区号
      */
     private static AtomicInteger lastIds[];
 
@@ -76,17 +76,20 @@ public class IdStar implements InitializingBean {
         if (regionNoLen <= 0 || regionNoLen > 41) {
             throw new RuntimeException("地区编号取值:1~41bit");
         }
-        if (snLen <= 0 || snLen > 27) {
-            throw new RuntimeException("流水id取值:1~27bit");
+        if (snLen <= 0 || snLen > 16) {
+            throw new RuntimeException("流水id取值:1~16bit");
         }
-        if (raceNoLen < 0 || raceNoLen > 8) {
-            throw new RuntimeException("种族编号取值:0~8bit");
+        if (raceNoLen < 0 || raceNoLen > 6) {
+            throw new RuntimeException("种族编号取值:0~6bit");
+        }
+        if (regionNoLen + raceNoLen + snLen > 63) {
+            throw new RuntimeException("id取值:最大63bit");
         }
 
         maxRegionNo = (1L << regionNoLen) - 1;
         maxRaceNo = (1 << raceNoLen) - 1;
         maxId = (1 << snLen) - 1;
-        //初始化为最大值，触使服务在第一次响应id请求时，更新页码
+        //初始化为最大值，触使服务在第一次响应id请求时，更新区号
         lastIds = new AtomicInteger[maxRaceNo];
         int i = 0;
         for (i = 0; i < maxRaceNo; i++) {
@@ -145,7 +148,7 @@ public class IdStar implements InitializingBean {
             if (maxId >= curId) {
                 return false;
             }
-            //更新页码
+            //更新区号
             regionNos[raceNo] = regionProvider.noManRegionNo(raceNo);
             if (maxRegionNo <= regionNos[raceNo]) {
                 throw new RuntimeException("no resources: arrived last region");
