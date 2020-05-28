@@ -1,0 +1,9 @@
+server:
+  port: ${peer3.port}
+
+eureka:
+  instance:
+    hostname: ${peer3.hostname}
+  client:
+    serviceUrl:
+      defaultZone: http://${spring.security.user.name}:${spring.security.user.password}@${peer1.hostname}:${peer1.port}/eureka/, http://${spring.security.user.name}:${spring.security.user.password}@${peer2.hostname}:${peer2.port}/eureka/

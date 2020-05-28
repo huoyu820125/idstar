@@ -25,7 +25,7 @@ public class DefaultRegionProvider implements IRegionProvider {
     public Long noManRegionNo(Integer raceNo) {
         NBRestful nbRestful = new NBRestful();
         return nbRestful.addUriVariables("version", raceNo)
-                .get("id-page", Long.class, "idstar/region/noman");
+                .get("id-region", Long.class, "idstar/region/noman");
     }
 
 }
