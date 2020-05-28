@@ -1,7 +1,6 @@
-package com.sq.idstar.service.nbrestful.sdk;
+package com.sq.idstar.impl.nbrestful;
 
-import com.sq.idstar.service.nbrestful.util.RestfulBeanHelp;
-import com.sq.idstar.service.nbrestful.util.RouteRestTemplate;
+import com.sq.idstar.impl.nbrestful.impl.RouteRestTemplate;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -36,7 +35,7 @@ public class NBRestful {
     }
 
     public <T> T get(IRestfulRouter router, Long rountValue, String svrName, Class<T> resultType, String uri) {
-        RouteRestTemplate nbRestTemplate = RestfulBeanHelp.getRestTemplateInstance();
+        RouteRestTemplate nbRestTemplate = RouteRestTemplate.getInstance();
         return nbRestTemplate.get(router, rountValue, svrName, resultType, uri, uriVariables);
     }
 
@@ -45,7 +44,7 @@ public class NBRestful {
     }
 
     public <T> T post(IRestfulRouter router, Long rountValue, String svrName, Class<T> resultType, String uri, Object object) {
-        RouteRestTemplate nbRestTemplate = RestfulBeanHelp.getRestTemplateInstance();
+        RouteRestTemplate nbRestTemplate = RouteRestTemplate.getInstance();
         return nbRestTemplate.post(router, rountValue, svrName, resultType, uri, object, uriVariables);
     }
 }

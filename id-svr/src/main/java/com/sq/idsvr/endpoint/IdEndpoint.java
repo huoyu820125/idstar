@@ -1,6 +1,6 @@
 package com.sq.idsvr.endpoint;
 
-import com.sq.idstar.service.IdStar;
+import com.sq.idstar.IdStar;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.client.discovery.DiscoveryClient;

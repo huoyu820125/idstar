@@ -1,4 +1,4 @@
-package com.sq.idstar.service;
+package com.sq.idstar;
 
 /**
  * @Athor SunQian

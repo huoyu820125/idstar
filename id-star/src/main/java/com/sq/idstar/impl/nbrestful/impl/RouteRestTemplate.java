@@ -1,11 +1,11 @@
-package com.sq.idstar.service.nbrestful.util;
+package com.sq.idstar.impl.nbrestful.impl;
 
-import com.sq.idstar.service.nbrestful.sdk.IRestfulRouter;
+import com.sq.idstar.impl.nbrestful.IRestfulRouter;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.springframework.cloud.client.loadbalancer.LoadBalancerClient;
-import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
 import java.sql.Timestamp;
@@ -19,12 +19,22 @@ import java.util.Map;
  * @CreateTime 2019/6/26 16:55
  * @Description: TODO
  */
-@Component
-public class RouteRestTemplate {
+public class RouteRestTemplate implements InitializingBean {
+    public static RouteRestTemplate s_nbRestTemplate;
+
     @Autowired
     private DiscoveryClient discoveryClient;
     @Autowired
     private LoadBalancerClient loadBalancerClient;
+
+    @Override
+    public void afterPropertiesSet() throws Exception {
+        s_nbRestTemplate = this;
+    }
+
+    public static RouteRestTemplate getInstance() {
+        return s_nbRestTemplate;
+    }
 
     private Map<String, List<ServiceInstance>> svrsMap = new HashMap<>();
     private Map<String, Timestamp> lastRefreshMap = new HashMap<>();

@@ -1,4 +1,4 @@
-package com.sq.idstar.service.nbrestful.sdk;
+package com.sq.idstar.impl.nbrestful;
 
 /**
  * @Athor SunQian

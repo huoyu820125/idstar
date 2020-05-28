@@ -1,7 +1,7 @@
-package com.sq.idstar.service;
+package com.sq.idstar.impl;
 
-import com.sq.idstar.service.nbrestful.sdk.NBRestful;
-import org.springframework.stereotype.Service;
+import com.sq.idstar.IRegionProvider;
+import com.sq.idstar.impl.nbrestful.NBRestful;
 
 /**
  * @author sq
@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
  * @description 默认的id地区提供者
  * @date 2019/4/24 下午4:08
  */
-@Service(value = "defaultRegionProvider")
 public class DefaultRegionProvider implements IRegionProvider {
 
     /**

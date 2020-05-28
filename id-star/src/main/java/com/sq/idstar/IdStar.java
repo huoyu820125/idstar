@@ -1,11 +1,11 @@
-package com.sq.idstar.service;
+package com.sq.idstar;
 
+import com.sq.idstar.impl.IdStarConfig;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ApplicationObjectSupport;
-import org.springframework.stereotype.Service;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -18,10 +18,10 @@ import java.util.concurrent.atomic.AtomicInteger;
  *      snLen位id资源用完，从redis获取最新可用地区编号
  * @date 2019/4/24 上午11:36
  */
-@Service
+//@Service
 public class IdStar implements InitializingBean {
     @Autowired
-    IdConfig idConfig;
+    IdStarConfig idStarConfig;
 
     /**
      * 所有种族当前区号
@@ -56,12 +56,12 @@ public class IdStar implements InitializingBean {
         ApplicationContext context = applicationObjectSupport.getApplicationContext();
         regionProvider = (IRegionProvider)context.getBean(regionProviderClass);
         //初始化为最大值，触使服务在第一次响应id请求时，更新区号
-        lastIds = new AtomicInteger[idConfig.maxRaceNo];
+        lastIds = new AtomicInteger[idStarConfig.getMaxRaceNo()];
         int i = 0;
-        for (i = 0; i < idConfig.maxRaceNo; i++) {
-            lastIds[i] = new AtomicInteger(idConfig.maxId);
+        for (i = 0; i < idStarConfig.getMaxRaceNo(); i++) {
+            lastIds[i] = new AtomicInteger(idStarConfig.getMaxId());
         }
-        regionNos = new long[idConfig.maxRaceNo];
+        regionNos = new long[idStarConfig.getMaxRaceNo()];
     }
 
     /**
@@ -85,12 +85,12 @@ public class IdStar implements InitializingBean {
      * @date 2019/4/24 下午12:06
      */
     public Long nextId(Integer raceNo){
-        if (raceNo > idConfig.maxRaceNo) {
-            throw new RuntimeException("种族编号只能是：0~" + String.valueOf(idConfig.maxRaceNo));
+        if (raceNo > idStarConfig.getMaxRaceNo()) {
+            throw new RuntimeException("种族编号只能是：0~" + String.valueOf(idStarConfig.getMaxRaceNo()));
         }
 
         int curId = lastIds[raceNo].addAndGet(1);
-        while (idConfig.maxId < curId) {
+        while (idStarConfig.getMaxId() < curId) {
             if (moveToNMR(curId, raceNo)) {
                 curId = 0;
                 break;
@@ -111,16 +111,16 @@ public class IdStar implements InitializingBean {
      */
     private boolean moveToNMR(int curId, int raceNo) {
         synchronized (IdStar.class) {
-            if (idConfig.maxId >= curId) {
+            if (idStarConfig.getMaxId() >= curId) {
                 return false;
             }
             //更新区号
             regionNos[raceNo] = regionProvider.noManRegionNo(raceNo);
-            if (idConfig.maxRegionNo <= regionNos[raceNo]) {
+            if (idStarConfig.getMaxRegionNo() <= regionNos[raceNo]) {
                 throw new RuntimeException("no resources: arrived last region");
             }
-            regionNos[raceNo] = (regionNos[raceNo] << (idConfig.raceNoLen + idConfig.snLen))
-                    + (raceNo << idConfig.snLen);
+            regionNos[raceNo] = (regionNos[raceNo] << (idStarConfig.getRaceNoLen() + idStarConfig.getSnLen()))
+                    + (raceNo << idStarConfig.getSnLen());
 
             //重置id
             lastIds[raceNo].set(0);

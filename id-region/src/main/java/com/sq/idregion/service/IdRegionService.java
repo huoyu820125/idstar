@@ -1,6 +1,6 @@
 package com.sq.idregion.service;
 
-import com.sq.idstar.service.IdConfig;
+import com.sq.idstar.impl.IdStarConfig;
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +26,7 @@ public class IdRegionService {
     private final Logger logger = Logger.getLogger(getClass());
 
     @Autowired
-    IdConfig idConfig;
+    IdStarConfig idStarConfig;
 
     @Value("${data.path}")
     private String dataPath;
@@ -40,7 +40,7 @@ public class IdRegionService {
      * @date 2019/4/24 下午4:32
      */
     public Long idle(Integer version) {
-        if (version < 0 || version > idConfig.getRaceNoLen()) {
+        if (version < 0 || version > idStarConfig.getMaxRaceNo()) {
             throw new RuntimeException("invalid version: version must be between 0 and 255");
         }
 
@@ -66,7 +66,7 @@ public class IdRegionService {
                 iutputStream.read(stream);
                 iutputStream.close();
                 regionNo = bytes2Long(stream);
-                if (idConfig.getMaxRegionNo() == regionNo) {
+                if (idStarConfig.getMaxRegionNo() == regionNo) {
                     throw new RuntimeException("no resources: arrived last region");
                 }
 

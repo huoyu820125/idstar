@@ -1,4 +1,4 @@
-package com.sq.idstar.service;
+package com.sq.idstar.impl;
 
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;
@@ -10,13 +10,14 @@ import org.springframework.stereotype.Component;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
- * @Title IdConfig
+ * @Title IdStarConfig
  * @Athor SunQian
  * @CreateTime 2020/5/28 14:10
  * @Description: todo
+ *      id = 1位留空 + regionNoLen位区号 + raceNoLen位种族编号 + snLen位流水id
  */
-@Component
-public class IdConfig implements InitializingBean {
+//@Component
+public class IdStarConfig implements InitializingBean {
     @Value("${idStart.idStruct.snLen:16}")
     protected Integer snLen;
     @Value("${idStart.idStruct.raceNoLen:6}")
@@ -25,17 +26,11 @@ public class IdConfig implements InitializingBean {
     protected Integer regionNoLen;
 
 
-    /**
-     * 最大区号
-     */
+    //最大区号
     protected long maxRegionNo;
-    /**
-     * 最大种族
-     */
+    //最大种族
     protected int maxRaceNo;
-    /**
-     * 最大id
-     */
+    //最大id
     protected int maxId;
 
     @Override
