@@ -3,6 +3,7 @@ package com.sq.idregion.service;
 import com.sq.idstar.impl.IdStarConfig;
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.FileSystemResource;
@@ -22,7 +23,7 @@ import java.io.IOException;
  * @date 2019/4/24 下午4:31
  */
 @Service
-public class IdRegionService {
+public class IdRegionService implements InitializingBean {
     private final Logger logger = Logger.getLogger(getClass());
 
     @Autowired
@@ -30,6 +31,19 @@ public class IdRegionService {
 
     @Value("${data.path}")
     private String dataPath;
+
+    @Value("${cluster.node.id:1}")
+    private Long nodeId;
+
+    @Override
+    public void afterPropertiesSet() throws Exception {
+        logger.info("nodeId:" + nodeId);
+        if (nodeId < 1 || nodeId > 4) {
+            throw new RuntimeException("cluster.node.id:最少1个节点, 最多4个节点");
+        }
+        nodeId--;
+        nodeId = nodeId << idStarConfig.getRegionNoLen();
+    }
 
     /**
      * 空闲地区
@@ -81,7 +95,7 @@ public class IdRegionService {
             }
         }
 
-        return regionNo;
+        return nodeId + regionNo;
     }
 
     public static byte[] long2Bytes(long num) {

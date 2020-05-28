@@ -35,10 +35,14 @@ public class IdStarConfig implements InitializingBean {
 
     @Override
     public void afterPropertiesSet() throws Exception {
+        if (regionNoLen < 10) {
+            throw new RuntimeException("地区编号太短:至少10bit");
+        }
         if (regionNoLen + raceNoLen + snLen > 63) {
-            throw new RuntimeException("id取值:最大63bit");
+            throw new RuntimeException("id长度最大63bit");
         }
 
+        regionNoLen -=2;
         maxRegionNo = (1L << regionNoLen) - 1;
         maxRaceNo = (1 << raceNoLen) - 1;
         maxId = (1 << snLen) - 1;
