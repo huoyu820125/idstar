@@ -20,9 +20,6 @@ public class ExampleEndpoint {
     private final Logger logger = Logger.getLogger(getClass());
 
     @Autowired
-    DiscoveryClient discoveryClient;
-
-    @Autowired
     IdStar idStar;
 
     @RequestMapping("/idstar/next")
