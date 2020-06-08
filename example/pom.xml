@@ -20,7 +20,7 @@
 
 	<dependencies>
 		<dependency>
-			<groupId>com.github.sq</groupId>
+			<groupId>com.github.huoyu820125</groupId>
 			<artifactId>id-star</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
