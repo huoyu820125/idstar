@@ -15,9 +15,8 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * @Athor SunQian
- * @CreateTime 2019/6/26 16:55
- * @Description: TODO
+ * @author sq
+ * @version 1.0
  */
 public class RouteRestTemplate implements InitializingBean {
     public static RouteRestTemplate s_nbRestTemplate;
@@ -88,13 +87,11 @@ public class RouteRestTemplate implements InitializingBean {
     }
 
     /**
-     * author: SunQian
-     * date: 2019/6/26 19:49
-     * title: uri参数转uri字符串
-     * descritpion: TODO
+     * uri参数转uri字符串
+     * @author: SunQian
      * @param paramMap
-     * return: TODO
-     */
+     * @return todo
+    */
     private String uriParams(Map<String, Object> paramMap) {
         StringBuffer uriParams = new StringBuffer();
         int i = 0;
@@ -108,15 +105,13 @@ public class RouteRestTemplate implements InitializingBean {
         return uriParams.toString();
     }
     /**
-     * author: SunQian
-     * date: 2019/6/26 19:07
-     * title: 选择结点
-     * descritpion: TODO
-     * @param router        路由器
-     * @param rountValue    路由值
-     * @param svrName
-     * return: 服务实例
-     */
+     * 选择结点
+     * @author: SunQian
+     * @param router    路由器
+     * @param rountValue 路由值
+     * @param svrName 服务名
+     * @return 服务实例
+    */
     private ServiceInstance choose(IRestfulRouter router, Long rountValue, String svrName) {
         if (null == router) {
             ServiceInstance svr = loadBalancerClient.choose(svrName);

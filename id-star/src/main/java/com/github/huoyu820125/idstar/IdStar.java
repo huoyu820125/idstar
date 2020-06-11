@@ -10,13 +10,11 @@ import org.springframework.context.support.ApplicationObjectSupport;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
- * @author sq
- * @version 1.0
- * @className IdStar
- * @description id星球
+ * id星球
  *      id = 1位留空 + regionNoLen位区号 + raceNoLen位种族编号 + snLen位流水id
  *      snLen位id资源用完，从redis获取最新可用地区编号
- * @date 2019/4/24 上午11:36
+ * @author sq
+ * @version 1.0
  */
 //@Service
 public class IdStar implements InitializingBean {
@@ -65,25 +63,21 @@ public class IdStar implements InitializingBean {
     }
 
     /**
-     * 下一个id
-     *
-     * @param
-     * @return java.lang.Long
-     * @author sq
-     * @date 2019/4/24 下午12:06
-     */
+     * 生成唯一id
+     * 使用默认id种族(种族，可以用于区分业务类型，表等)
+     * @author: SunQian
+     * @return todo
+    */
     public Long nextId(){
         return nextId(0);
     }
 
     /**
-     * 下一个id
-     *
-     * @param
-     * @return java.lang.Long
-     * @author sq
-     * @date 2019/4/24 下午12:06
-     */
+     * 生成唯一id
+     * @author: SunQian
+     * @param raceNo id种族，可以用于区分业务类型，表等
+     * @return todo
+    */
     public Long nextId(Integer raceNo){
         if (raceNo > idStarConfig.getMaxRaceNo()) {
             throw new RuntimeException("种族编号只能是：0~" + String.valueOf(idStarConfig.getMaxRaceNo()));
@@ -91,7 +85,7 @@ public class IdStar implements InitializingBean {
 
         int curId = lastIds[raceNo].addAndGet(1);
         while (idStarConfig.getMaxId() < curId) {
-            if (moveToNMR(curId, raceNo)) {
+            if (moveToNMR(raceNo)) {
                 curId = 0;
                 break;
             }
@@ -103,14 +97,14 @@ public class IdStar implements InitializingBean {
 
     /**
      * 进入无人区
-     *
-     * @param
+     * @author: SunQian
+     * @param raceNo 进入哪个种族的无人区
      * @return boolean 多线程并发时，只有一个线程的调用会进入无人区，其它线程的全部返回false
-     * @author sq
-     * @date 2019/4/24 下午3:52
-     */
-    private boolean moveToNMR(int curId, int raceNo) {
+    */
+    private boolean moveToNMR(int raceNo) {
         synchronized (IdStar.class) {
+            //确保只有1个线程进入
+            int curId = lastIds[raceNo].get();
             if (idStarConfig.getMaxId() >= curId) {
                 return false;
             }

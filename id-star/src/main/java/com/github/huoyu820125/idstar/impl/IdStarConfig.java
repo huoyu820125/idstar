@@ -10,11 +10,9 @@ import org.springframework.stereotype.Component;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
- * @Title IdStarConfig
- * @Athor SunQian
- * @CreateTime 2020/5/28 14:10
- * @Description: todo
- *      id = 1位留空 + regionNoLen位区号 + raceNoLen位种族编号 + snLen位流水id
+ * id结构配置：id = 1位留空 + regionNoLen位区号 + raceNoLen位种族编号 + snLen位流水id
+ * @author sq
+ * @version 1.0
  */
 //@Component
 public class IdStarConfig implements InitializingBean {

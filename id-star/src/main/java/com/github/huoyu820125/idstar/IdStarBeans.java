@@ -7,10 +7,9 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 
 /**
- * @Title IdStarBeans
- * @Athor SunQian
- * @CreateTime 2020/5/28 18:52
- * @Description: 从IdStarBeans派生一个类，添加注解@Configuration，不用添加任何代码
+ * 从IdStarBeans派生一个类，添加注解@Configuration，不用添加任何代码
+ * @author sq
+ * @version 1.0
  */
 public class IdStarBeans {
     @Bean

@@ -6,23 +6,20 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * @Athor SunQian
- * @CreateTime 2019/6/26 19:16
- * @Description: TODO
+ * @author sq
+ * @version 1.0
  */
 public class NBRestful {
 
     private Map<String, Object> uriVariables = new HashMap<>();
 
     /**
-     * author: SunQian
-     * date: 2019/6/26 19:22
-     * title: 添加uri参数
-     * descritpion: TODO
+     * 添加uri参数
+     * @author: SunQian
      * @param name  参数名
      * @param value 参数值
-     * return: 链式调用支持
-     */
+     * @return: 链式调用支持
+    */
     public NBRestful addUriVariables(String name, Object value) {
         uriVariables.put(name, value);
 

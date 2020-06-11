@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>com.github.huoyu820125</groupId>
 	<artifactId>id-star</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>1.0.0-RELEASE</version>
 	<name>id-star</name>
 
 	<properties>
@@ -82,4 +82,95 @@
 
 	</build>
 
+	<!--maven仓库地址-->
+	<distributionManagement>
+		<snapshotRepository>
+			<id>oss</id>
+			<url>https://oss.sonatype.org/content/repositories/snapshots</url>
+		</snapshotRepository>
+		<repository>
+			<id>oss</id>
+			<url>https://oss.sonatype.org/service/local/staging/deploy/maven2</url>
+		</repository>
+	</distributionManagement>
+
+	<!--发布者-->
+	<developers>
+		<developer>
+			<name>sunqian</name>
+			<email>sunqian820125@sina.com</email>
+		</developer>
+	</developers>
+
+	<!--开源许可-->
+	<!--MIT 许可证 &#45;&#45; 只要用户在项目副本中包含了版权声明和许可声明，他们就可以拿你的代码做任何想做的事情，你也无需承担任何责任。-->
+	<!--Apache 许可证 &#45;&#45; 类似 MIT 许可证，但它同时还包含了贡献者向用户提供专利授权相关的条款。-->
+	<!--GPL 许可证 &#45;&#45; 这是一种copyleft许可证，要求修改项目代码的用户再次分发源码或二进制代码时，必须公布他的相关修改。V3版本与V2类似，但其进一步约束了在某些限制软件更改的硬件上的使用范围。-->
+	<licenses>
+		<license>
+			<name>MIT License</name>
+			<url>https://opensource.org/licenses/MIT</url>
+		</license>
+	</licenses>
+
+	<!--仓库地址-->
+	<scm>
+		<connection>scm:git:https://github.com/huoyu820125/idstar.git</connection>
+		<developerConnection>scm:https://github.com/huoyu820125/idstar.git</developerConnection>
+		<url>https://github.com/huoyu820125/idstar.git</url>
+	</scm>
+
+	<!--打包配置-->
+	<profiles>
+		<profile>
+			<id>release</id>
+			<build>
+				<plugins>
+					<!-- Source必须-->
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-source-plugin</artifactId>
+						<version>2.2.1</version>
+						<executions>
+							<execution>
+								<phase>package</phase>
+								<goals>
+									<goal>jar-no-fork</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+					<!--Javadoc必须-->
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-javadoc-plugin</artifactId>
+						<version>2.9.1</version>
+						<executions>
+							<execution>
+								<id>attach-javadocs</id>
+								<goals>
+									<goal>jar</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+					<!--GPG必须-->
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-gpg-plugin</artifactId>
+						<version>1.5</version>
+						<executions>
+							<execution>
+								<id>sign-artifacts</id>
+								<phase>verify</phase>
+								<goals>
+									<goal>sign</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
 </project>
