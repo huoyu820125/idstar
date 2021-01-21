@@ -1,10 +1,9 @@
 package com.github.huoyu820125.idregion.service;
 
-import com.github.huoyu820125.idstar.impl.IdStarConfig;
+import com.github.huoyu820125.idstar.IdStarConfig;
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.InitializingBean;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
@@ -26,8 +25,13 @@ import java.io.IOException;
 public class IdRegionService implements InitializingBean {
     private final Logger logger = Logger.getLogger(getClass());
 
-    @Autowired
-    IdStarConfig idStarConfig;
+    @Value("${idStart.idStruct.snLen:16}")
+    protected Integer snLen;
+    @Value("${idStart.idStruct.raceNoLen:6}")
+    protected Integer raceNoLen;
+    @Value("${idStart.idStruct.regionNoLen:41}")
+    protected Integer regionNoLen;
+    private IdStarConfig idStarConfig;
 
     @Value("${data.path}")
     private String dataPath;
@@ -37,6 +41,7 @@ public class IdRegionService implements InitializingBean {
 
     @Override
     public void afterPropertiesSet() throws Exception {
+        idStarConfig = new IdStarConfig(snLen, raceNoLen, regionNoLen);
         logger.info("nodeId:" + nodeId);
         if (nodeId < 1 || nodeId > 4) {
             throw new RuntimeException("cluster.node.id:最少1个节点, 最多4个节点");
