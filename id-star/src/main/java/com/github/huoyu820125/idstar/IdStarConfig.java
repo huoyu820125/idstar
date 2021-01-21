@@ -1,26 +1,13 @@
-package com.github.huoyu820125.idstar.impl;
-
-import org.springframework.beans.factory.InitializingBean;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.stereotype.Component;
-
-import java.util.concurrent.atomic.AtomicInteger;
+package com.github.huoyu820125.idstar;
 
 /**
  * id结构配置：id = 1位留空 + regionNoLen位区号 + raceNoLen位种族编号 + snLen位流水id
  * @author sq
  * @version 1.0
  */
-//@Component
-public class IdStarConfig implements InitializingBean {
-    @Value("${idStart.idStruct.snLen:16}")
+public class IdStarConfig {
     protected Integer snLen;
-    @Value("${idStart.idStruct.raceNoLen:6}")
     protected Integer raceNoLen;
-    @Value("${idStart.idStruct.regionNoLen:41}")
     protected Integer regionNoLen;
 
 
@@ -31,8 +18,21 @@ public class IdStarConfig implements InitializingBean {
     //最大id
     protected int maxId;
 
-    @Override
-    public void afterPropertiesSet() throws Exception {
+    public IdStarConfig() {
+        snLen = 16;
+        raceNoLen = 6;
+        regionNoLen = 41;
+        init();
+    }
+
+    public IdStarConfig(int snLen, int raceNoLen, int regionNoLen) {
+        this.snLen = snLen;
+        this.raceNoLen = raceNoLen;
+        this.regionNoLen = regionNoLen;
+        init();
+    }
+
+    private void init() {
         if (regionNoLen < 10) {
             throw new RuntimeException("地区编号太短:至少10bit");
         }

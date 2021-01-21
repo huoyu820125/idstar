@@ -1,24 +1,24 @@
 package com.github.huoyu820125.idstar;
 
-import com.github.huoyu820125.idstar.impl.IdStarConfig;
-import org.springframework.beans.factory.InitializingBean;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.support.ApplicationObjectSupport;
+import com.github.huoyu820125.idstar.error.RClassify;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * id星球
- *      id = 1位留空 + regionNoLen位区号 + raceNoLen位种族编号 + snLen位流水id
+ *      id = 1位留空 + regionNoLen位区号 + raceNoLen位种族编号 + snLen位流水号
  *      snLen位id资源用完，从redis获取最新可用地区编号
  * @author sq
  * @version 1.0
  */
-//@Service
-public class IdStar implements InitializingBean {
-    @Autowired
+public class IdStar {
+    private static Logger log = LoggerFactory.getLogger(IdStar.class);
+
+    /**
+     * 算法配置
+    */
     IdStarConfig idStarConfig;
 
     /**
@@ -28,12 +28,10 @@ public class IdStar implements InitializingBean {
     private static long[] regionNos;
 
     /**
-     * 所有种族上次使用过的id
-     * snLenbit，占低位
-     * 最大值maxId
+     * 所有种族上次使用过的流水号
      * 初始化为最大值，触使服务在第一次响应id请求时，更新区号
      */
-    private static AtomicInteger lastIds[];
+    private static AtomicInteger lastSns[];
 
     /**
      * id地区提供者
@@ -42,23 +40,17 @@ public class IdStar implements InitializingBean {
      */
     IRegionProvider regionProvider;
 
+    protected IdStar(IRegionProvider regionProvider, IdStarConfig idStarConfig) {
+        this.regionProvider = regionProvider;
+        this.idStarConfig = idStarConfig;
 
-    @Value("${idStart.regionProvider.instance.name:defaultRegionProvider}")
-    String regionProviderClass;
-
-    @Autowired
-    ApplicationObjectSupport applicationObjectSupport;
-
-    @Override
-    public void afterPropertiesSet() throws Exception {
-        ApplicationContext context = applicationObjectSupport.getApplicationContext();
-        regionProvider = (IRegionProvider)context.getBean(regionProviderClass);
         //初始化为最大值，触使服务在第一次响应id请求时，更新区号
-        lastIds = new AtomicInteger[idStarConfig.getMaxRaceNo()];
+        lastSns = new AtomicInteger[idStarConfig.getMaxRaceNo()];
         int i = 0;
         for (i = 0; i < idStarConfig.getMaxRaceNo(); i++) {
-            lastIds[i] = new AtomicInteger(idStarConfig.getMaxId());
+            lastSns[i] = new AtomicInteger(idStarConfig.getMaxId());
         }
+
         regionNos = new long[idStarConfig.getMaxRaceNo()];
     }
 
@@ -68,58 +60,47 @@ public class IdStar implements InitializingBean {
      * @author: SunQian
      * @return todo
     */
-    public Long nextId(){
-        return nextId(0);
+    public Long next(){
+        return next(0);
     }
 
     /**
      * 生成唯一id
      * @author: SunQian
-     * @param raceNo id种族，可以用于区分业务类型，表等
+     * @param raceNo id种族从0开始，不能超过idStarConfig.getMaxRaceNo()，
+     *               可以用于区分业务类型，表等
      * @return todo
     */
-    public Long nextId(Integer raceNo){
+    public Long next(Integer raceNo){
         if (raceNo > idStarConfig.getMaxRaceNo()) {
-            throw new RuntimeException("种族编号只能是：0~" + String.valueOf(idStarConfig.getMaxRaceNo()));
+            throw RClassify.param.exception("种族编号只能是：0~" + String.valueOf(idStarConfig.getMaxRaceNo()));
         }
 
-        int curId = lastIds[raceNo].addAndGet(1);
-        while (idStarConfig.getMaxId() < curId) {
-            if (moveToNMR(raceNo)) {
-                curId = 0;
-                break;
+        //拿下一个流水号
+        int curSN = lastSns[raceNo].addAndGet(1);
+        if (curSN > idStarConfig.getMaxId()) {
+            //当前地区流水号已用完，更新区号，流水号从0开始
+            synchronized (this) {
+                // 可能其它线程已经更新了区号和上次流水号
+                // 所以再拿1次流水号，确保只有1个线程进入更新区号的逻辑
+                curSN = lastSns[raceNo].addAndGet(1);
+                if (curSN > idStarConfig.getMaxId()) {
+                    //更新区号
+                    regionNos[raceNo] = regionProvider.noManRegionNo(raceNo);
+                    if (idStarConfig.getMaxRegionNo() <= regionNos[raceNo]) {
+                        throw RClassify.refused.exception("no resources: arrived last region");
+                    }
+                    regionNos[raceNo] = (regionNos[raceNo] << (idStarConfig.getRaceNoLen() + idStarConfig.getSnLen()))
+                            + (raceNo << idStarConfig.getSnLen());
+
+                    //当前流水号=0
+                    curSN = 0;
+                    //保存上次使用的流水号
+                    lastSns[raceNo].set(0);
+                }
             }
-            curId = lastIds[raceNo].addAndGet(1);
         }
 
-        return regionNos[raceNo] + curId;
-    }
-
-    /**
-     * 进入无人区
-     * @author: SunQian
-     * @param raceNo 进入哪个种族的无人区
-     * @return boolean 多线程并发时，只有一个线程的调用会进入无人区，其它线程的全部返回false
-    */
-    private boolean moveToNMR(int raceNo) {
-        synchronized (IdStar.class) {
-            //确保只有1个线程进入
-            int curId = lastIds[raceNo].get();
-            if (idStarConfig.getMaxId() >= curId) {
-                return false;
-            }
-            //更新区号
-            regionNos[raceNo] = regionProvider.noManRegionNo(raceNo);
-            if (idStarConfig.getMaxRegionNo() <= regionNos[raceNo]) {
-                throw new RuntimeException("no resources: arrived last region");
-            }
-            regionNos[raceNo] = (regionNos[raceNo] << (idStarConfig.getRaceNoLen() + idStarConfig.getSnLen()))
-                    + (raceNo << idStarConfig.getSnLen());
-
-            //重置id
-            lastIds[raceNo].set(0);
-        }
-
-        return true;
+        return regionNos[raceNo] + curSN;
     }
 }
