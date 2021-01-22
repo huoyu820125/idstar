@@ -1,10 +1,12 @@
 package com.github.huoyu820125.example.region;
 
+import com.github.huoyu820125.idstar.http.Http;
 import com.github.huoyu820125.idstar.IRegionProvider;
-import com.github.huoyu820125.example.region.nbrestful.NBRestful;
 import com.github.huoyu820125.idstar.IdStarClient;
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+
 
 /**
  * 默认的id地区提供者
@@ -13,6 +15,9 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class RegionProvider implements IRegionProvider, InitializingBean {
+
+    @Value("${idRegion.endpoint}")
+    private String regionEndpoint;
 
     @Override
     public void afterPropertiesSet() throws Exception {
@@ -27,9 +32,10 @@ public class RegionProvider implements IRegionProvider, InitializingBean {
      */
     @Override
     public Long noManRegionNo(Integer raceNo) {
-        NBRestful nbRestful = new NBRestful();
-        return nbRestful.addUriVariables("version", raceNo)
-                .get("id-region", Long.class, "idstar/region/noman");
+        Http http = new Http();
+        return (Long)http.addUriParam("version", raceNo)
+                .get(regionEndpoint + "/idstar/region/noman", 0)
+                .response(Long.class);
     }
-
 }
+
