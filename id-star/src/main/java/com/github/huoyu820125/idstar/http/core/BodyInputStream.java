@@ -1,14 +1,14 @@
 package com.github.huoyu820125.idstar.http.core;
 
 
-import com.github.huoyu820125.idstar.http.Http;
+import com.github.huoyu820125.idstar.error.CallException;
 import com.github.huoyu820125.idstar.error.RClassify;
+import com.github.huoyu820125.idstar.stream.ReadStream;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.util.EntityUtils;
 
 import java.io.IOException;
-import java.io.InputStream;
 
 /**
  * @Title BodyInputStream
@@ -63,7 +63,7 @@ public class BodyInputStream extends ReadStream {
         int n = 0;
         try {
             n = super.read(buffer, offset, readSize);
-        } catch (IOException e) {
+        } catch (CallException e) {
             throw RClassify.bug.exception("接收body异常", e);
         }
         if (-1 == n) {

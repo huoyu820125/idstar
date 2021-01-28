@@ -40,7 +40,6 @@ public class IdStarConfig {
             throw new RuntimeException("id长度最大63bit");
         }
 
-        regionNoLen -=2;
         maxRegionNo = (1L << regionNoLen) - 1;
         maxRaceNo = (1 << raceNoLen) - 1;
         maxId = (1 << snLen) - 1;

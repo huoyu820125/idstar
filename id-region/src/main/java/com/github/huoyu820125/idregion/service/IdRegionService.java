@@ -1,6 +1,7 @@
 package com.github.huoyu820125.idregion.service;
 
 import com.github.huoyu820125.idstar.IdStarConfig;
+import com.github.huoyu820125.idstar.error.RClassify;
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.InitializingBean;
@@ -18,7 +19,7 @@ import java.io.IOException;
  * @author sq
  * @version 1.0
  * @className IdRegionService
- * @description TODO
+ * @description  分布式全局唯一区号结构：结点id(高位2byte)+本地流水号(低位n byte)，2 + n < regionNoLen
  * @date 2019/4/24 下午4:31
  */
 @Service
@@ -41,13 +42,17 @@ public class IdRegionService implements InitializingBean {
 
     @Override
     public void afterPropertiesSet() throws Exception {
+        if (regionNoLen <= 2) {
+            throw RClassify.refused.exception("配置项idStart.idStruct.regionNoLen必须>2");
+        }
+
         idStarConfig = new IdStarConfig(snLen, raceNoLen, regionNoLen);
         logger.info("nodeId:" + nodeId);
         if (nodeId < 1 || nodeId > 4) {
             throw new RuntimeException("cluster.node.id:最少1个节点, 最多4个节点");
         }
         nodeId--;
-        nodeId = nodeId << idStarConfig.getRegionNoLen();
+        nodeId = nodeId << (idStarConfig.getRegionNoLen() - 2);
     }
 
     /**
@@ -64,7 +69,9 @@ public class IdRegionService implements InitializingBean {
         }
 
         String dataFileName = "nextRegionNo.v" + version.toString();
-        Long regionNo = 0L;
+        //分布式唯一区号=结点id(2byte) + 本地未使用的流水号(n byte)
+        Long serialNo = 0L;
+        long regionNo = 0;
         synchronized (IdRegionService.class) {
             String fileFullPath = getJarFullPath() + File.separator + dataPath;
             String fileFullPathName = fileFullPath + File.separator + dataFileName;
@@ -77,22 +84,23 @@ public class IdRegionService implements InitializingBean {
                     FileUtils.touch(dataFile);
                 }
 
-                //读下一个空闲区号
+                //读未使用的流水号
                 resource = new FileSystemResource(fileFullPathName);
                 dataFile = resource.getFile();
                 FileInputStream iutputStream = new FileInputStream(dataFile);
                 byte[] stream = new byte[8];
                 iutputStream.read(stream);
                 iutputStream.close();
-                regionNo = bytes2Long(stream);
+                serialNo = bytes2Long(stream);
+                regionNo = nodeId + serialNo;
                 if (idStarConfig.getMaxRegionNo() == regionNo) {
                     throw new RuntimeException("no resources: arrived last region");
                 }
 
-                //下一个空闲区号写回文件
-                Long nextRegionNo = regionNo + 1;
+                //未使用的流水号写回文件
+                serialNo++;
                 FileOutputStream outputStream = new FileOutputStream(dataFile);
-                stream = long2Bytes(nextRegionNo);
+                stream = long2Bytes(serialNo);
                 outputStream.write(stream);
                 outputStream.close();
             } catch (IOException e) {
@@ -100,7 +108,7 @@ public class IdRegionService implements InitializingBean {
             }
         }
 
-        return nodeId + regionNo;
+        return regionNo;
     }
 
     public static byte[] long2Bytes(long num) {
@@ -168,4 +176,6 @@ public class IdRegionService implements InitializingBean {
 
         return jarFullPath;
     }
+
+
 }
