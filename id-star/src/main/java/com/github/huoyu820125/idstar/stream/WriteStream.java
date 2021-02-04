@@ -76,7 +76,7 @@ public class WriteStream {
      * @return 实际写入长度
      */
     public long write(InputStream src, long maxSize) {
-        return write(new ReadStream(src, null), maxSize);
+        return write(new ReadStream(src, null, false), maxSize);
     }
 
     /**

@@ -3,7 +3,8 @@ package com.github.huoyu820125.idregion.service;
 import com.github.huoyu820125.idstar.IdStarConfig;
 import com.github.huoyu820125.idstar.error.RClassify;
 import org.apache.commons.io.FileUtils;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.FileSystemResource;
@@ -24,7 +25,7 @@ import java.io.IOException;
  */
 @Service
 public class IdRegionService implements InitializingBean {
-    private final Logger logger = Logger.getLogger(getClass());
+    private final Logger log = LoggerFactory.getLogger(getClass());
 
     @Value("${idStart.idStruct.snLen:16}")
     protected Integer snLen;
@@ -40,19 +41,55 @@ public class IdRegionService implements InitializingBean {
     @Value("${cluster.node.id:1}")
     private Long nodeId;
 
+    private Boolean inited = false;
+
     @Override
     public void afterPropertiesSet() throws Exception {
+        readNodeId();
         if (regionNoLen <= 2) {
             throw RClassify.refused.exception("配置项idStart.idStruct.regionNoLen必须>2");
         }
 
         idStarConfig = new IdStarConfig(snLen, raceNoLen, regionNoLen);
-        logger.info("nodeId:" + nodeId);
+        log.info("nodeId:{}", nodeId);
         if (nodeId < 1 || nodeId > 4) {
             throw new RuntimeException("cluster.node.id:最少1个节点, 最多4个节点");
         }
         nodeId--;
         nodeId = nodeId << (idStarConfig.getRegionNoLen() - 2);
+    }
+
+    private void readNodeId() {
+        nodeId = 1L;
+    }
+
+    public void init(Integer nodeId) {
+        if (null == nodeId) {
+            throw new RuntimeException("缺少结点id");
+        }
+        if (1 > nodeId || nodeId > 4) {
+            throw new RuntimeException("结点id只能是1~4");
+        }
+
+        synchronized(this) {
+            if (inited) {
+                throw new RuntimeException("初始化已完成，不能设置结点id");
+            }
+            inited = true;
+            this.nodeId = nodeId.longValue();
+        }
+    }
+
+    public Integer nodeId() {
+        if (null == nodeId) {
+            return null;
+        }
+
+        return nodeId.intValue();
+    }
+
+    public Boolean isInited() {
+        return inited;
     }
 
     /**
@@ -142,13 +179,13 @@ public class IdRegionService implements InitializingBean {
     private String getJarFullPath() {
 //            实际执行时work_path + jar_path就是jar绝对路径
 //            String work_path = new File("").getAbsolutePath();
-//            logger.info("工作路径(IDE调试下是ide工作目录，真实运行时是java指令执行时当前目录)="+work_path);
+//            log.info("工作路径(IDE调试下是ide工作目录，真实运行时是java指令执行时当前目录)={}", work_path);
 //            String jar_path = System.getProperty("java.class.path");
-//            logger.info("jar相对路径(IDE调试下不可用，真实运行时是jar相对路径)="+jar_path);
+//            log.info("jar相对路径(IDE调试下不可用，真实运行时是jar相对路径)={}", jar_path);
 
         String jarFullPath = IdRegionService.class.getProtectionDomain().getCodeSource().getLocation().getPath();
         jarFullPath = jarFullPath.replace("/", File.separator);
-//        logger.info("jar绝对路径(IDE调试下是不带target/class位置，实际运行时是jar绝对路径+file:前缀)="+jarFullPath);
+//        log.info("jar绝对路径(IDE调试下是不带target/class位置，实际运行时是jar绝对路径+file:前缀)={}", jarFullPath);
 
         if (!jarFullPath.contains(".jar")) {
             //ide中调试，取到的是class目录，target下
@@ -176,6 +213,4 @@ public class IdRegionService implements InitializingBean {
 
         return jarFullPath;
     }
-
-
 }
