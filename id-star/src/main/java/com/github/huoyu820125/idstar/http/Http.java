@@ -203,7 +203,7 @@ public class Http {
         try {
             response = HttpClient.instance().execute(request, httpContext);
         } catch (IOException e) {
-            throw RClassify.bug.exception("http请求异常", e);
+            throw RClassify.bug.exception("http请求异常:" + url + "", e);
         }
 
         return this;
@@ -233,7 +233,7 @@ public class Http {
         try {
             response = HttpClient.instance().execute(request, httpContext);
         } catch (IOException e) {
-            throw RClassify.bug.exception("http请求异常", e);
+            throw RClassify.bug.exception("http请求异常:" + url + "", e);
         }
 
         return this;
@@ -283,6 +283,14 @@ public class Http {
     }
 
     /*****************************************接收回应结果******************************************/
+    private Boolean ok() {
+        if (200 == response.getStatusLine().getStatusCode()) {
+            return true;
+        }
+
+        return false;
+    }
+
     /**
      * @title: 回应数据
      * @author: SunQian
@@ -305,6 +313,10 @@ public class Http {
         }
         String jsonStr = new String(body, charset);
 
+        if (!ok()) {
+            throw RClassify.bug.exception(jsonStr);
+        }
+
         return jsonStr;
     }
 
@@ -317,26 +329,35 @@ public class Http {
      * @return todo
     */
     public Object response(Class<?> clazz) {
-        if (Integer.class.equals(clazz)) {
-            return Integer.valueOf(response());
+        String response = response();
+        try {
+            if (Integer.class.equals(clazz)) {
+                return Integer.valueOf(response);
+            }
+            if (Long.class.equals(clazz)) {
+                return Long.valueOf(response);
+            }
+            if (Short.class.equals(clazz)) {
+                return Long.valueOf(response);
+            }
+            if (Byte.class.equals(clazz)) {
+                return Long.valueOf(response);
+            }
+            if (Character.class.equals(clazz)) {
+                return Long.valueOf(response);
+            }
+            if (Boolean.class.equals(clazz)) {
+                if (response.equals("true")) {
+                    return true;
+                }
+                else if (response.equals("false")) {
+                    return false;
+                }
+            }
+            throw RClassify.bug.exception("http响应类型错误：期望类型：" + clazz.getName() + "，响应数据:" + response);
+        } catch (Exception e) {
+            throw RClassify.bug.exception("http响应类型错误：期望类型：" + clazz.getName() + "，响应数据:" + response);
         }
-        if (Long.class.equals(clazz)) {
-            return Long.valueOf(response());
-        }
-        if (Short.class.equals(clazz)) {
-            return Long.valueOf(response());
-        }
-        if (Byte.class.equals(clazz)) {
-            return Long.valueOf(response());
-        }
-        if (Character.class.equals(clazz)) {
-            return Long.valueOf(response());
-        }
-        if (Boolean.class.equals(clazz)) {
-            return Boolean.valueOf(response());
-        }
-
-        throw RClassify.param.exception("仅支持类型：Char Short Integer Long Byte Character Boolean");
     }
 
     /**

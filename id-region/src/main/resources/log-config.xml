@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+1.xml对象
+    定义了2大类对象，logger和appender
+    appender是一个日志的载体,相当于纸张，日志被写到appender上
+    logger是一个记录者，负责完成记录日志这件事情，把日志往appender上输入
+
+2.日志级别控制
+    有3个地方可以设置
+    A.配置文件:logging.level.包路径|<logger>结点中的name属性定义的日志名
+    B.appender中的<filter>结点
+        appender中的<filter>有2种
+            1.ThresholdFilter输出指定级别和更高级别的日志，也就是指定info，会输出info、warn、error
+            2.LevelFilter用于指定单一level的日志输出or不输出，比如只输出info而不输出warn和error，或者不输出warn，其它都输出
+    C.logger中的<level>结点
+    优先级：分2种情况:1无配置,2无配置
+    无配置:
+        日志越少越优先，比如B=info(多)、C=warn(少)，那么日志只记录warn
+    有配置：
+        C无效，A和B之间是，日志越少越优先
+        比如：A=info，B=debug，日志只能显示到info
+        比如：A=debug，B=info，日志只能显示到info
+        比如：A=debug，B=无配置，日志只能显示到debug
+-->
+<configuration>
+    <!--
+        希望引用配置文件中的变量
+            有说法logback.xml加载早于application.properties，早于logback-spring.xml
+            但是实测结果是下面这行才是关键，与logback-spring.xml还是logback.xml无关
+    -->
+    <property resource="application.properties"/>
+
+    <!--控制台-->
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <!--
+            日志级别过滤
+        -->
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>${logger.filter.console}</level>
+        </filter>
+        <encoder>
+            <pattern>%-5level %d{yy-MM-dd HH:mm:ss}: %msg; %t %logger{50}%n</pattern>
+        </encoder>
+    </appender>
+
+    <!--spring+app日志文件-->
+    <appender name="APP"
+              class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${logger.path}/${logger.appName}/${logger.appName}.log</file>
+        <!-- 日志滚动策略，按日期，按大小记录 -->
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!--按日期滚动文件命名：文件名.时间.切片索引.例如log-error-2017-09-21.0.log -->
+            <fileNamePattern>${logger.path}/${logger.appName}/${logger.appName}.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <!--日志切片最大100M，切片索引0开始-->
+            <timeBasedFileNamingAndTriggeringPolicy
+                    class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <maxFileSize>100MB</maxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy>
+            <!--保留天数最多30天-->
+            <maxHistory>30</maxHistory>
+        </rollingPolicy>
+
+        <!--
+            日志级别过滤
+        -->
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <!--日志级别：从设置值开始及以上级别都会输出-->
+            <level>${logger.filter.root}</level>
+            <!--以下配置，是LevelFilter的属性，不输出日志级别以上的级别-->
+            <!--            <onMatch>ACCEPT</onMatch>-->
+            <!--            <onMismatch>DENY</onMismatch>-->
+        </filter>
+
+        <encoder>
+            <pattern>%-5level %d{yy-MM-dd HH:mm:ss}: %msg; %t %logger{50}%n</pattern>
+            <charset>utf-8</charset>
+        </encoder>
+    </appender>
+
+    <!--统计日志文件-->
+    <appender name="STATS_XXX_FILE"
+              class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${logger.path}/${logger.appName}/${logger.appName}_stats_xxx.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${logger.path}/${logger.appName}/${logger.appName}_stats_xxx_logName.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <timeBasedFileNamingAndTriggeringPolicy
+                    class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <maxFileSize>100MB</maxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy>
+            <maxHistory>30</maxHistory>
+        </rollingPolicy>
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>${logger.filter.stats_xxx}</level>
+        </filter>
+        <encoder>
+            <pattern>%-5level %d{yy-MM-dd HH:mm:ss}: %msg; %t%n</pattern>
+            <charset>utf-8</charset>
+        </encoder>
+    </appender>
+
+    <!--监控日志文件-->
+    <appender name="MONITOR_XXX_FILE"
+              class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${logger.path}/${logger.appName}/${logger.appName}_monitor_xxx.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${logger.path}/${logger.appName}/${logger.appName}_monitor_xxx.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <timeBasedFileNamingAndTriggeringPolicy
+                    class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <maxFileSize>100MB</maxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy>
+            <maxHistory>30</maxHistory>
+        </rollingPolicy>
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>${logger.filter.monitor_xxx}</level>
+        </filter>
+        <encoder>
+            <pattern>%-5level %d{yy-MM-dd HH:mm:ss}: %msg; %t%n</pattern>
+            <charset>utf-8</charset>
+        </encoder>
+    </appender>
+
+    <!--埋点日志文件-->
+    <appender name="VISIT_XXX_FILE"
+              class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${logger.path}/${logger.appName}/${logger.appName}_visit_xxx.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${logger.path}/${logger.appName}/${logger.appName}_visit_xxx.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <timeBasedFileNamingAndTriggeringPolicy
+                    class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <maxFileSize>100MB</maxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy>
+            <maxHistory>30</maxHistory>
+        </rollingPolicy>
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>${logger.filter.visit_xxx}</level>
+        </filter>
+        <encoder>
+            <pattern>%-5level %d{yy-MM-dd HH:mm:ss}: %msg; %t%n</pattern>
+            <charset>utf-8</charset>
+        </encoder>
+    </appender>
+
+    <!--
+        root是特殊的logger 用LoggerFactory.getLogger(类名.class);在程序中引用
+    -->
+    <root level="debug">
+        <appender-ref ref="CONSOLE"/>
+        <appender-ref ref="APP"/>
+    </root>
+
+    <!--
+        一个logger就是一个日志类实例，用LoggerFactory.getLogger(name);在程序中引用
+        additivity：网上的说法是日志是否向上级传递
+            实际效果是，只影响当前logger和root节点中的控制台的日志输出
+            false只会输出到当前logger的控制台，true则会在root里面的控制台输出
+            所以true会导致控制台输出多次，如果root里面有控制输出
+    -->
+    <!--xxx统计员-->
+    <logger name="stats_xxx" additivity="false" level="trace">
+        <appender-ref ref="CONSOLE" />
+        <appender-ref ref="STATS_XXX_FILE"/>
+    </logger>
+
+    <!--xxx监视员-->
+    <logger name="monitor_xxx" additivity="false" level="trace">
+        <appender-ref ref="CONSOLE"/>
+        <appender-ref ref="MONITOR_XXX_FILE" />
+    </logger>
+
+    <!--xxx访问登记员-->
+    <logger name="visit_xxx" additivity="false" level="trace">
+        <appender-ref ref="CONSOLE" />
+        <appender-ref ref="VISIT_XXX_FILE"/>
+    </logger>
+
+</configuration>

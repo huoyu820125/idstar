@@ -5,6 +5,9 @@
 
 package com.github.huoyu820125.idstar.paxos;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -16,6 +19,11 @@ import java.util.List;
  * @Description: todo
  */
 public class Proposer<T> {
+    private final Logger log = LoggerFactory.getLogger(getClass());
+
+    //死锁次数
+    private Integer paxosCount = 0;
+
     public Proposer(List<IAcceptorClient> acceptors, T value, Integer timeout) {
         this.acceptors = acceptors;
         this.mAcceptorCount = acceptors.size();
@@ -28,7 +36,6 @@ public class Proposer<T> {
     //开始Propose阶段
     private void startPropose() {
         mValue.setSerialNum(mValue.serialNum() + 1);
-        mProposeFinished = false;
         mIsAgree = false;
         mMaxAcceptedSerialNum = 0;
         mOkCount = 0;
@@ -36,6 +43,12 @@ public class Proposer<T> {
         Date curTime = new Date();
         mStart = curTime.getTime();//这就是距离1970年1月1日0点0分0秒的毫秒数
         readyAcceptors.clear();
+        if (paxosCount < 1) {
+            log.info("拉票 start:报酬={}，{}人接受，{}人拒绝", mValue.serialNum(), mOkCount, mRefuseCount);
+        }
+        else {
+            log.info("拉票 restart:第{}次:报酬={}，{}人接受，{}人拒绝", paxosCount, mValue.serialNum(), mOkCount, mRefuseCount);
+        }
     }
 
     /*
@@ -60,14 +73,17 @@ public class Proposer<T> {
     private boolean onProposed(boolean ok, ProposeData<T> lastAcceptValue) {
         if (!ok) {
             mRefuseCount++;
+            log.info("拉票 refused:报酬={}，{}人接受，{}人拒绝", mValue.serialNum(), mOkCount, mRefuseCount);
             //已有半数拒绝，不需要等待其它acceptor投票了，重新开始Propose阶段
             if (mRefuseCount > mAcceptorCount / 2) {
+                log.info("拉票 failed:报酬={}，{}人接受，{}人拒绝", mValue.serialNum(), mOkCount, mRefuseCount);
                 return false;
             }
             return true;
         }
 
         mOkCount++;
+        log.info("拉票 accepted:报酬={}，{}人接受，{}人拒绝", mValue.serialNum(), mOkCount, mRefuseCount);
         /*
 		        没有必要检查分支：serialNum为null
 		        因为serialNum>m_maxAcceptedSerialNum，与serialNum非0互为必要条件
@@ -75,37 +91,48 @@ public class Proposer<T> {
         //记录所有收到的提议中，编号最大的提议，当自己获得提议权时，提出
         if (lastAcceptValue.serialNum() > mMaxAcceptedSerialNum) {
             mMaxAcceptedSerialNum = lastAcceptValue.serialNum();
-            mValue.setValue(lastAcceptValue.value());
-        }
-        if (mOkCount > mAcceptorCount / 2) {
-            mOkCount = 0;
-            mProposeFinished = true;
+            if (null != lastAcceptValue.value()) {
+                mValue.setValue(lastAcceptValue.value());
+            }
         }
         return true;
     }
 
-    //开始Accept阶段,满足条件成功开始accept阶段返回ture，不满足开始条件返回false
-    private boolean startAccept() {
-        return mProposeFinished;
+    //尝试开始Accept阶段,满足条件成功开始accept阶段返回ture，不满足开始条件返回false
+    private boolean tryStartAccept() {
+        if (mOkCount > mAcceptorCount / 2) {
+            log.info("拉票 success:报酬={}，{}人接受，{}人拒绝", mValue.serialNum(), mOkCount, mRefuseCount);
+            mOkCount = 0;
+            if (paxosCount < 1) {
+                log.info("提议 start:报酬={}，{}人接受，{}人拒绝", mValue.serialNum(), mOkCount, mRefuseCount);
+            }
+            else {
+                log.info("提议 restart:第{}次:报酬={}，{}人接受，{}人拒绝", paxosCount, mValue.serialNum(), mOkCount, mRefuseCount);
+            }
+            return true;
+        }
+
+        return false;
     }
 
     //提议被接受，Accepted失败则重新开始Propose阶段
     private boolean onAccepted(boolean ok) {
-        if (!mProposeFinished) {
-            return true;//可能是上次第二阶段迟到的回应，直接忽略消息
-        }
         if (!ok) {
             mRefuseCount++;
+            log.info("提议 refused:报酬={}，{}人接受，{}人拒绝", mValue.serialNum(), mOkCount, mRefuseCount);
             //已有半数拒绝，不需要等待其它acceptor投票了，重新开始Propose阶段
             if (mRefuseCount > mAcceptorCount / 2) {
+                log.info("提议 failed:报酬={}，{}人接受，{}人拒绝", mValue.serialNum(), mOkCount, mRefuseCount);
                 return false;
             }
             return true;
         }
 
         mOkCount++;
+        log.info("提议 accepted:报酬={}，{}人接受，{}人拒绝", mValue.serialNum(), mOkCount, mRefuseCount);
         if (mOkCount > mAcceptorCount / 2) {
             mIsAgree = true;
+            log.info("提议 success:报酬={}，{}人接受，{}人拒绝", mValue.serialNum(), mOkCount, mRefuseCount);
         }
 
         return true;
@@ -124,14 +151,22 @@ public class Proposer<T> {
      * @return 最终投票结果
     */
     public T exe() {
+        paxosCount = -1;
         ProposeData lastValue = new ProposeData();
         while (true) {
-            sleep(1000);//为了降低活锁，多等一会让别的proposer有机会完成自己的2阶段批准
+            paxosCount++;
+            if (paxosCount > 1) {
+                //为了降低活锁，多等一会让别的proposer有机会完成自己的2阶段批准
+                Long t = rand(10) + 1L;
+                log.info("{}秒后重新拉票", t);
+                sleep(t * 1000);
+            }
             startPropose();
             //循环一阶段
             for (IAcceptorClient acceptor : acceptors) {
                 if (isTimeOut(mTimeout)) {
                     //超时重新开始Propose阶段
+                    log.info("拉票 timeout:报酬={}，{}人接受，{}人拒绝", mValue.serialNum(), mOkCount, mRefuseCount);
                     break;
                 }
                 /*
@@ -147,29 +182,31 @@ public class Proposer<T> {
                     //重新开始Propose阶段
                     break;
                 }
-                if (!ok) {
-                    //向下一个acceptor拉票
-                    continue;
+                if (ok) {
+                    readyAcceptors.add(acceptor);//记录愿意投票的acceptor
                 }
 
-                readyAcceptors.add(acceptor);//记录愿意投票的acceptor
-                if (this.startAccept()) {
-                    if (0 == rand(100) % 2)
+                if (mOkCount > mAcceptorCount / 2) {
+                    //已达成半数，可以不向剩下的决策者拉票
+                    if (rand(100) > 30)
                     {
+                        //70%的几率立刻开始决策
                         break;
                     }
                 }
-            }
-            //检查有没有达到Accept开始条件，如果没有表示要重新开始Propose阶段
-            if (!this.startAccept()) {
-                continue;
+
+                //向下一个acceptor拉票
             }
 
-            //开始Accept阶段
+            //尝试开始Accept阶段，如果没有开始表示没有满足条件，要重新开始Propose阶段
+            if (!this.tryStartAccept()) {
+                continue;
+            }
             //发送Accept消息到所有愿意投票的acceptor
             for (IAcceptorClient acceptor : readyAcceptors) {
                 if (isTimeOut(mTimeout)) {
                     //超时重新开始阶段一
+                    log.info("提议 timeout:报酬={}，{}人接受，{}人拒绝", mValue.serialNum(), mOkCount, mRefuseCount);
                     break;
                 }
 
@@ -202,7 +239,6 @@ public class Proposer<T> {
     private int mTimeout;//拉票阶段和投票阶段的超时时间
     private int mAcceptorCount;//acceptor数量
     private ProposeData<T> mValue;//提议内容
-    private boolean mProposeFinished;//完成拉票，准备开始二阶段
     private boolean mIsAgree;//m_value被批准
     private int mMaxAcceptedSerialNum;//已被接受的提议中流水号最大的
     private long mStart;//阶段开始时间，阶段一，阶段二共用

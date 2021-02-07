@@ -1,8 +1,10 @@
 package com.github.huoyu820125.idregion.client;
 
 import com.alibaba.fastjson.JSONObject;
+import com.github.huoyu820125.idregion.domin.ProposeDataDTO;
 import com.github.huoyu820125.idregion.domin.RegisterResultDTO;
 import com.github.huoyu820125.idstar.http.Http;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -36,8 +38,8 @@ public class MasterClient {
                 .addUriParam("nodeId", nodeId)
                 .post(endpoint + "/idstar/master/node/register", 1000)
                 .response();
-        RegisterResultDTO resultDTO = JSONObject.parseObject(response).toJavaObject(RegisterResultDTO.class);
 
-        return resultDTO;
+        JSONObject json = JSONObject.parseObject(response);
+        return json.toJavaObject(RegisterResultDTO.class);
     }
 }

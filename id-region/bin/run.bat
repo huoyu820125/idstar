@@ -1,1 +1,1 @@
-java -Xms21m -Xmx64m -jar ./id-region-0.0.1-SNAPSHOT.jar --cluster.node.id=1 --eureka.instance.ip-address=127.0.0.1 --server.port=8225 --eureka.url=http://eureka1:1801/eureka
+java -Xms21m -Xmx64m -jar ./id-region-0.0.1-SNAPSHOT.jar --server.port=8227 --nodelist=127.0.0.1:8225,127.0.0.1:8226,127.0.0.1:8227

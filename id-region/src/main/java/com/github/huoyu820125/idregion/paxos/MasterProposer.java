@@ -34,13 +34,13 @@ public class MasterProposer implements InitializingBean, Runnable {
     private Proposer<String> proposer;
 
     //用于识别自身的基础组件
-    private Self<Integer> self = new Self<Integer>(new IntegerAlgorithm(), 6);
+    private Self<Integer> self = new Self<>(new IntegerAlgorithm(), 6);
     //自身地址，通过self识别
     private String selfAddress;
 
     //结点地址列表
     @Value("${nodelist}")
-    protected String nodelist;
+    protected String nodeList;
 
     @Autowired
     Master master;
@@ -60,7 +60,7 @@ public class MasterProposer implements InitializingBean, Runnable {
 
     @Override
     public void run() {
-        String[] addressList = StringUtils.split(nodelist, ",");
+        String[] addressList = StringUtils.split(nodeList, ",");
         if (addressList.length < 3) {
             log.error("集群不能少于3个结点，请修改配置后重启服务");
             return;
@@ -97,7 +97,7 @@ public class MasterProposer implements InitializingBean, Runnable {
             firstValue = addressList[0];
         }
         log.info("初始提议:master = {}", firstValue);
-        proposer = new Proposer<String>(acceptors, firstValue, 30000);
+        proposer = new Proposer<>(acceptors, firstValue, 30000);
         String masterAddress = proposer.exe();
         log.info("投票最终结果：master = {}", masterAddress);
 

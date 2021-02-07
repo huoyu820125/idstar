@@ -5,7 +5,6 @@ import com.github.huoyu820125.idstar.paxos.Acceptor;
 import com.github.huoyu820125.idstar.paxos.ProposeData;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 /**
@@ -19,15 +18,7 @@ import org.springframework.web.bind.annotation.*;
 public class AcceptorEndpoint {
     private final Logger log = LoggerFactory.getLogger(getClass());
 
-    private Acceptor acceptor;
-
-    @Autowired
-    MasterProposer proposer;
-
-    @RequestMapping(value = "/who/are/you", method = RequestMethod.GET)
-    public Integer whoAreYou() {
-        return proposer.lastFeatrue();
-    }
+    private Acceptor<String> acceptor = new Acceptor<>();
 
     @RequestMapping(value = "/propose", method = RequestMethod.GET)
     public ProposeDataDTO propose(@RequestParam("serialNum") int serialNum) {
