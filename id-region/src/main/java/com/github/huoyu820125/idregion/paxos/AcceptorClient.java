@@ -2,6 +2,7 @@ package com.github.huoyu820125.idregion.paxos;
 
 import com.alibaba.fastjson.JSONObject;
 import com.github.huoyu820125.idregion.domin.ProposeDataDTO;
+import com.github.huoyu820125.idstar.error.CallException;
 import com.github.huoyu820125.idstar.http.Http;
 import com.github.huoyu820125.idstar.paxos.IAcceptorClient;
 import com.github.huoyu820125.idstar.paxos.ProposeData;
@@ -39,8 +40,11 @@ public class AcceptorClient implements IAcceptorClient<String> {
             }
             JSONObject json = JSONObject.parseObject(response);
             value = json.toJavaObject(ProposeDataDTO.class);
+        } catch (CallException e) {
+            log.error("拉票请求{}异常：{}", endpoint, e.getMessage());
+            return null;
         } catch (Exception e) {
-            log.error("请求{}/idstar/paxos/propose异常", endpoint, e);
+            log.error("拉票请求{}异常", endpoint, e);
             return null;
         }
 
@@ -67,8 +71,11 @@ public class AcceptorClient implements IAcceptorClient<String> {
             Http http = new Http();
             ok = (Boolean)http.setBody(body.toJSONString())
                     .post(endpoint + "/idstar/paxos/accept", 1000).response(Boolean.class);
+        } catch (CallException e) {
+            log.error("发送提案{}异常：{}", endpoint, e.getMessage());
+            return false;
         } catch (Exception e) {
-            log.error("请求{}/idstar/paxos/accept异常", endpoint, e);
+            log.error("发送提案{}异常", endpoint, e);
             return false;
         }
 

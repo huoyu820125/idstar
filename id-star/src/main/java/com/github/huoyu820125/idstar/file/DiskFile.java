@@ -85,6 +85,14 @@ public class DiskFile {
         return fileSize;
     }
 
+    /**
+     * @title: 开始读文件
+     * @author: SunQian
+     * @date: 2021/2/7 15:56
+     * @descritpion: todo
+     * @param authClose
+     * @return
+    */
     public ReadStream startRead(boolean authClose) {
         FileInputStream inputStream = null;
         Long fileSize = null;
@@ -103,13 +111,37 @@ public class DiskFile {
         return new ReadStream(inputStream, fileSize, authClose);
     }
 
-    private WriteStream startWrite(boolean authCreate) {
+    /**
+     * @title: startWrite开始写入
+     * @author: SunQian
+     * @date: 2021/2/7 15:55
+     * @descritpion: todo
+     * @return todo
+    */
+    public WriteStream startWrite() {
+        return startWrite(true, false);
+    }
+
+    /**
+     * @title: 开始写入
+     * @author: SunQian
+     * @date: 2021/2/7 15:54
+     * @descritpion: todo
+     * @param autoCreate    文件不存在时，自动创建
+     * @param override      是否覆盖写入：true是
+     * @return
+    */
+    public WriteStream startWrite(Boolean autoCreate, Boolean override) {
+        if (!exists()) {
+            create();
+        }
+
         FileOutputStream outputStream = null;
         try {
             if (!exists()) {
                 throw RClassify.refused.exception("文件:" + path() + File.separator + name() + "不存在");
             }
-            outputStream = new FileOutputStream(file);
+            outputStream = new FileOutputStream(file, !override);
         } catch (FileNotFoundException e) {
             throw RClassify.refused.exception("文件不存在" + e.getMessage());
         } catch (IOException e) {

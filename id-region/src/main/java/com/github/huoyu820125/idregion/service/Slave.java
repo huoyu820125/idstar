@@ -31,7 +31,7 @@ public class Slave {
      * @return todo
     */
     public void nodeRegister(String masterAddress, String selfAddress) {
-        Integer nodeId = idRegionService.nodeId();
+        Integer nodeId = idRegionService.readNodeId();
         while (true) {
             try {
                 MasterClient master = new MasterClient(masterAddress);

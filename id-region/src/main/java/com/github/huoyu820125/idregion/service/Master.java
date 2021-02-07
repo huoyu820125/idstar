@@ -40,8 +40,9 @@ public class Master {
     */
     public void init(String masterAddress, String[] addressList) {
         //给master分配结点id
-        if (null != idRegionService.nodeId()) {
-            addNode(masterAddress, idRegionService.nodeId());
+        Integer masterNodeId = idRegionService.readNodeId();
+        if (null != masterNodeId) {
+            addNode(masterAddress, masterNodeId);
         }
 
         //询问集群中各结点希望获得的结点id
@@ -61,15 +62,17 @@ public class Master {
             addNode(addressList[i], state.getNodeId());
         }
 
-        if (null == idRegionService.nodeId()) {
-            Integer nodeId = nextNodeId();
-            if (null == nodeId) {
+        if (null == masterNodeId) {
+            masterNodeId = nextNodeId();
+            if (null == masterNodeId) {
                 log.error("master没有结点id可用");
                 return;
             }
-            addNode(masterAddress, nextNodeId());
+            addNode(masterAddress, masterNodeId);
         }
         isInited = true;
+
+        idRegionService.init(masterNodeId);
 
         return;
     }

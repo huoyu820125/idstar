@@ -106,4 +106,24 @@ public class ReadStream {
         return offset;
     }
 
+    public Integer readInteger() {
+        byte[] data = new byte[4];
+        int n = read(data, 0, 4);
+        if (n < 4) {
+            throw RClassify.bug.exception("数据不足");
+        }
+
+        return Serializable.getInteger(data);
+    }
+
+    public Long readLong() {
+        byte[] data = new byte[8];
+        int n = read(data, 0, 8);
+        if (n < 8) {
+            throw RClassify.bug.exception("数据不足");
+        }
+
+        return Serializable.getLong(data);
+    }
+
 }

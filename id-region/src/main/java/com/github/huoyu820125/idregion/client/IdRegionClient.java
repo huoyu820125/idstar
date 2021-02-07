@@ -37,7 +37,9 @@ public class IdRegionClient {
                 NodeStateDto state = JSONObject.parseObject(response).toJavaObject(NodeStateDto.class);
                 return state;
             } catch (Exception e) {
-                log.warn("取结点状态异常:结点地址-{}", address, e);
+                if (tryCount.equals(0)) {
+                    log.warn("取结点状态异常:结点地址-{}", address, e);
+                }
             }
         }
 

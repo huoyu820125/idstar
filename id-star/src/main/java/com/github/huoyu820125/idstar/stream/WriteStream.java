@@ -107,4 +107,15 @@ public class WriteStream {
 
         return len;
     }
+
+    public void write(Integer value) {
+        byte[] data = Serializable.getStream(value);
+        write(data, 0, 4);
+    }
+
+    public void write(Long value) {
+        byte[] data = Serializable.getStream(value);
+        write(data, 0, 8);
+    }
+
 }

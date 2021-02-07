@@ -2,6 +2,9 @@ package com.github.huoyu820125.idregion.service;
 
 import com.github.huoyu820125.idstar.IdStarConfig;
 import com.github.huoyu820125.idstar.error.RClassify;
+import com.github.huoyu820125.idstar.file.DiskFile;
+import com.github.huoyu820125.idstar.stream.ReadStream;
+import com.github.huoyu820125.idstar.stream.WriteStream;
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,7 +39,7 @@ public class IdRegionService implements InitializingBean {
     private IdStarConfig idStarConfig;
 
     @Value("${data.path}")
-    private String dataPath;
+    private String dataDir;
 
     @Value("${cluster.node.id:1}")
     private Long nodeId;
@@ -45,22 +48,11 @@ public class IdRegionService implements InitializingBean {
 
     @Override
     public void afterPropertiesSet() throws Exception {
-        readNodeId();
         if (regionNoLen <= 2) {
             throw RClassify.refused.exception("配置项idStart.idStruct.regionNoLen必须>2");
         }
 
         idStarConfig = new IdStarConfig(snLen, raceNoLen, regionNoLen);
-        log.info("nodeId:{}", nodeId);
-        if (nodeId < 1 || nodeId > 4) {
-            throw new RuntimeException("cluster.node.id:最少1个节点, 最多4个节点");
-        }
-        nodeId--;
-        nodeId = nodeId << (idStarConfig.getRegionNoLen() - 2);
-    }
-
-    private void readNodeId() {
-        nodeId = 1L;
     }
 
     public void init(Integer nodeId) {
@@ -75,17 +67,44 @@ public class IdRegionService implements InitializingBean {
             if (inited) {
                 throw new RuntimeException("初始化已完成，不能设置结点id");
             }
-            inited = true;
             this.nodeId = nodeId.longValue();
+            if (nodeId < 1 || nodeId > 4) {
+                throw new RuntimeException("cluster.node.id:最少1个节点, 最多4个节点");
+            }
+            saveNodeId(nodeId);
+
+            this.nodeId--;
+            this.nodeId = this.nodeId << (idStarConfig.getRegionNoLen() - 2);
+            inited = true;
+            log.info("初始化完成：nodeId={}", nodeId);
         }
     }
 
-    public Integer nodeId() {
-        if (null == nodeId) {
-            return null;
+    public Integer readNodeId() {
+        String path = getJarFullPath() + File.separator + dataDir;
+        DiskFile file = new DiskFile(path + File.separator + "node.sav");
+        ReadStream readStream = file.startRead(false);
+        Integer nodeId = null;
+        try {
+            nodeId = readStream.readInteger();
+        } finally {
+            readStream.close();
         }
 
-        return nodeId.intValue();
+        log.info("读取到结点id:{}", nodeId);
+
+        return nodeId;
+    }
+
+    private void saveNodeId(Integer nodeId) {
+        String path = getJarFullPath() + File.separator + dataDir;
+        DiskFile file = new DiskFile(path + File.separator + "node.sav");
+        WriteStream writeStream = file.startWrite();
+        try {
+            writeStream.write(nodeId);
+        } finally {
+            writeStream.close();
+        }
     }
 
     public Boolean isInited() {
@@ -110,7 +129,7 @@ public class IdRegionService implements InitializingBean {
         Long serialNo = 0L;
         long regionNo = 0;
         synchronized (IdRegionService.class) {
-            String fileFullPath = getJarFullPath() + File.separator + dataPath;
+            String fileFullPath = getJarFullPath() + File.separator + dataDir;
             String fileFullPathName = fileFullPath + File.separator + dataFileName;
 
             Resource resource = new FileSystemResource(fileFullPathName);
