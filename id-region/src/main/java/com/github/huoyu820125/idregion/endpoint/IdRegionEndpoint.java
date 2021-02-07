@@ -33,7 +33,7 @@ public class IdRegionEndpoint {
     public NodeStateDto nodeState() {
         NodeStateDto dto = new NodeStateDto();
         dto.setIsInited(idRegionService.isInited());
-        dto.setNodeId(idRegionService.nodeId());
+        dto.setNodeId(idRegionService.readNodeId());
         return dto;
     }
 
