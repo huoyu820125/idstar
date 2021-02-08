@@ -83,6 +83,10 @@ public class IdRegionService implements InitializingBean {
     public Integer readNodeId() {
         String path = getJarFullPath() + File.separator + dataDir;
         DiskFile file = new DiskFile(path + File.separator + "node.sav");
+        if (!file.exists()) {
+            return null;
+        }
+
         ReadStream readStream = file.startRead(false);
         Integer nodeId = null;
         try {

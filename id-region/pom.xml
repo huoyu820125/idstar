@@ -115,6 +115,21 @@
 										<include name="${artifactId}-${version}.jar"/>
 									</fileset>
 								</copy>
+								<copy todir="${basedir}/bin/node1" overwrite="true" >
+									<fileset dir="${project.build.directory}" erroronmissingdir="false">
+										<include name="${artifactId}-${version}.jar"/>
+									</fileset>
+								</copy>
+								<copy todir="${basedir}/bin/node2" overwrite="true" >
+									<fileset dir="${project.build.directory}" erroronmissingdir="false">
+										<include name="${artifactId}-${version}.jar"/>
+									</fileset>
+								</copy>
+								<copy todir="${basedir}/bin/node3" overwrite="true" >
+									<fileset dir="${project.build.directory}" erroronmissingdir="false">
+										<include name="${artifactId}-${version}.jar"/>
+									</fileset>
+								</copy>
 							</tasks>
 						</configuration>
 					</execution>

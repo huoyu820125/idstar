@@ -44,8 +44,10 @@ public class Slave {
                 if (ERegisterCode.tooMoreNode.equals(resultDTO.getCode())) {
                     return;
                 }
+                sleep(5000);
             } catch (Exception e) {
                 log.warn("注册异常", e);
+                sleep(5000);
                 continue;
             }
 
@@ -53,5 +55,12 @@ public class Slave {
         }
 
         idRegionService.init(nodeId);
+    }
+
+    private void sleep(long timeout) {
+        try {
+            Thread.sleep(5000);
+        } catch (InterruptedException e) {
+        }
     }
 }

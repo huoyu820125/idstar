@@ -184,7 +184,7 @@ public class Master {
                 .collect(Collectors.toMap(n -> n.getNodeId(), n -> true));
         Integer nodeId = 1;
         for (; nodeId <= 4; nodeId++) {
-            if (idMap.containsKey(nodeId)) {
+            if (!idMap.containsKey(nodeId)) {
                 return nodeId;
             }
         }

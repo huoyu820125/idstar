@@ -36,8 +36,8 @@ public class MasterEndpoint {
     */
     @RequestMapping(value = "/node/register", method = RequestMethod.POST)
     public RegisterResultDTO nodeRegister(
-            @RequestParam(value = "address") String address,
-            @RequestParam(value = "nodeId") Integer nodeId
+            @RequestParam(value = "address", required = true) String address,
+            @RequestParam(value = "nodeId", required = false) Integer nodeId
     ) {
         return masterService.nodeRegister(address, nodeId);
     }

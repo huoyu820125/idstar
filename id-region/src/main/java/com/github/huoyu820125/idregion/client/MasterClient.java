@@ -34,9 +34,11 @@ public class MasterClient {
      */
     public RegisterResultDTO nodeRegister(String address, Integer nodeId) {
         Http http = new Http();
-        String response = http.addUriParam("address", address)
-                .addUriParam("nodeId", nodeId)
-                .post(endpoint + "/idstar/master/node/register", 1000)
+        http = http.addUriParam("address", address);
+        if (null != nodeId) {
+            http = http.addUriParam("nodeId", nodeId);
+        }
+        String response = http.post(endpoint + "/idstar/master/node/register", 1000)
                 .response();
 
         JSONObject json = JSONObject.parseObject(response);

@@ -157,7 +157,7 @@ public class Proposer<T> {
             paxosCount++;
             if (paxosCount > 1) {
                 //为了降低活锁，多等一会让别的proposer有机会完成自己的2阶段批准
-                Long t = rand(10) + 1L;
+                Long t = rand(5) + 1L;
                 log.info("{}秒后重新拉票", t);
                 sleep(t * 1000);
             }
