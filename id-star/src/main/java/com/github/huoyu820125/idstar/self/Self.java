@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * @Title 自身
+ * @Title 自我感知器
  * @Athor SunQian
  * @CreateTime 2021/2/1 16:32
  * @Description: todo
@@ -18,7 +18,6 @@ public class Self<T> {
     //用于感知自身的特征值列表,每次启动动态生成特征值
     private List<T> features = new ArrayList<>();
     private IBody<T> body;
-    private List<IBody<T>> bodys;
     private IGrowAlgorithm<T> growAlgorithm;
     private Integer growCount;
 
@@ -51,7 +50,6 @@ public class Self<T> {
      * @return true觉醒认知到的属于自己的身体，false bodys中不存在自己的身体，无法觉醒
     */
     public Boolean wake(List<IBody<T>> bodys) {
-        this.bodys = bodys;
         int i = 0;
         for (i = 0; i < bodys.size(); i++) {
             if (isSelf(bodys.get(i))) {
