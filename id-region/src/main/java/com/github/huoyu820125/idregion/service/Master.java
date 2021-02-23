@@ -74,6 +74,7 @@ public class Master {
 
         idRegionService.init(masterNodeId);
 
+        log.info("master初始化完成");
         return;
     }
 
@@ -150,7 +151,7 @@ public class Master {
 
     private Boolean addNode(String address, Integer nodeId) {
         if (null != nodeId) {
-            Boolean exist = cluster.stream().filter(n -> n.getNodeId().equals(nodeId)).findAny().isPresent();
+            Boolean exist = cluster.stream().filter(n -> nodeId.equals(n.getNodeId())).findAny().isPresent();
             if (exist) {
                 log.warn("结点id已被使用,结点地址-{}", address);
                 return false;

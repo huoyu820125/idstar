@@ -44,14 +44,10 @@ public class Slave {
                 if (ERegisterCode.tooMoreNode.equals(resultDTO.getCode())) {
                     return;
                 }
-                sleep(5000);
             } catch (Exception e) {
                 log.warn("注册异常", e);
-                sleep(5000);
-                continue;
             }
-
-            break;
+            sleep(5000);
         }
 
         idRegionService.init(nodeId);
