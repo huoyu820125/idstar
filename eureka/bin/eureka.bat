@@ -1,1 +1,0 @@
-java -Xms21m -Xmx64m -jar ./eureka-0.0.1-SNAPSHOT.jar --server.port=1801 --eureka.instance.hostname=eureka

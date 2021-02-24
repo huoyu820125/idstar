@@ -1,1 +1,0 @@
-nohup java -Xms8m -Xmx32m -jar ./eureka-0.0.1-SNAPSHOT.jar --server.port=1801 --eureka.instance.hostname=eureka > eureka.log  2>&1 &
