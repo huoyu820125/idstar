@@ -63,4 +63,18 @@ public class IdRegionClient {
         List<NodeDto> state = JSONArray.parseArray(response).toJavaList(NodeDto.class);
         return state;
     }
+
+    /**
+     * @title: 取无人占用的地区区号
+     * @author: SunQian
+     * @date: 2021/2/24 11:08
+     * @descritpion: todo
+     * @param version
+     * @return todo
+    */
+    public Long idle(Integer version) {
+        Http http = new Http();
+        Long regionNo = (Long)http.get(endpoint + "/idstar/region/noman", 1000).response(Long.class);
+        return regionNo;
+    }
 }
