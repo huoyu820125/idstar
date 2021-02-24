@@ -1,7 +1,7 @@
 package com.github.huoyu820125.idregion.paxos;
 
 import com.alibaba.fastjson.JSONObject;
-import com.github.huoyu820125.idregion.domin.ProposeDataDTO;
+import com.github.huoyu820125.idregion.domin.ProposeDataDto;
 import com.github.huoyu820125.idstar.error.CallException;
 import com.github.huoyu820125.idstar.http.Http;
 import com.github.huoyu820125.idstar.paxos.IAcceptorClient;
@@ -30,7 +30,7 @@ public class AcceptorClient implements IAcceptorClient<String> {
 
     @Override
     public ProposeData<String> propose(int serialNum) {
-        ProposeDataDTO value;
+        ProposeDataDto value;
         try {
             Http http = new Http();
             String response = http.addUriParam("serialNum", serialNum)
@@ -39,7 +39,7 @@ public class AcceptorClient implements IAcceptorClient<String> {
                 return null;
             }
             JSONObject json = JSONObject.parseObject(response);
-            value = json.toJavaObject(ProposeDataDTO.class);
+            value = json.toJavaObject(ProposeDataDto.class);
         } catch (CallException e) {
             log.error("拉票请求{}异常：{}", endpoint, e.getMessage());
             return null;
@@ -61,7 +61,7 @@ public class AcceptorClient implements IAcceptorClient<String> {
 
     @Override
     public Boolean accept(ProposeData<String> value) {
-        ProposeDataDTO param = new ProposeDataDTO();
+        ProposeDataDto param = new ProposeDataDto();
         param.setValue(value.value());
         param.setSerialNum(value.serialNum());
         JSONObject body = (JSONObject)JSONObject.toJSON(param);

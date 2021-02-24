@@ -1,6 +1,6 @@
 package com.github.huoyu820125.idregion.endpoint;
 
-import com.github.huoyu820125.idregion.domin.RegisterResultDTO;
+import com.github.huoyu820125.idregion.domin.RegisterResultDto;
 import com.github.huoyu820125.idregion.service.Master;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,7 +35,7 @@ public class MasterEndpoint {
      * @return 结点在集群内的id，最多4个结点，结点已满时，拒绝注册return null
     */
     @RequestMapping(value = "/node/register", method = RequestMethod.POST)
-    public RegisterResultDTO nodeRegister(
+    public RegisterResultDto nodeRegister(
             @RequestParam(value = "address", required = true) String address,
             @RequestParam(value = "nodeId", required = false) Integer nodeId
     ) {

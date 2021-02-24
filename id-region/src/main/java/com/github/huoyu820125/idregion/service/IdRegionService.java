@@ -3,12 +3,16 @@ package com.github.huoyu820125.idregion.service;
 import com.github.huoyu820125.idstar.IdStarConfig;
 import com.github.huoyu820125.idstar.error.RClassify;
 import com.github.huoyu820125.idstar.file.DiskFile;
+import com.github.huoyu820125.idstar.region.IdRegionClient;
+import com.github.huoyu820125.idstar.region.dto.NodeDto;
 import com.github.huoyu820125.idstar.stream.ReadStream;
 import com.github.huoyu820125.idstar.stream.WriteStream;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
@@ -18,6 +22,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.List;
 
 /**
  * @author sq
@@ -45,6 +50,11 @@ public class IdRegionService implements InitializingBean {
     private Long nodeId;
 
     private Boolean inited = false;
+    //自身地址，通过self识别
+    private String selfAddress;
+
+    @Autowired
+    Cluster cluster;
 
     @Override
     public void afterPropertiesSet() throws Exception {
@@ -55,12 +65,15 @@ public class IdRegionService implements InitializingBean {
         idStarConfig = new IdStarConfig(snLen, raceNoLen, regionNoLen);
     }
 
-    public void init(Integer nodeId) {
+    public void init(Integer nodeId, String selfAddress) {
         if (null == nodeId) {
             throw new RuntimeException("缺少结点id");
         }
         if (1 > nodeId || nodeId > 4) {
             throw new RuntimeException("结点id只能是1~4");
+        }
+        if (StringUtils.isEmpty(selfAddress)) {
+            throw new RuntimeException("缺少自身地址");
         }
 
         synchronized(this) {
@@ -68,6 +81,7 @@ public class IdRegionService implements InitializingBean {
                 throw new RuntimeException("初始化已完成，不能设置结点id");
             }
             this.nodeId = nodeId.longValue();
+            this.selfAddress = selfAddress;
             if (nodeId < 1 || nodeId > 4) {
                 throw new RuntimeException("cluster.node.id:最少1个节点, 最多4个节点");
             }
@@ -124,6 +138,10 @@ public class IdRegionService implements InitializingBean {
      * @date 2019/4/24 下午4:32
      */
     public Long idle(Integer version) {
+        if (!inited) {
+            throw new RuntimeException("service is initing");
+        }
+
         if (version < 0 || version > idStarConfig.getMaxRaceNo()) {
             throw new RuntimeException("invalid version: version must be between 0 and 255");
         }
@@ -235,5 +253,29 @@ public class IdRegionService implements InitializingBean {
         }
 
         return jarFullPath;
+    }
+
+    /**
+     * @title: 获取所有结点列表
+     * @author: SunQian
+     * @date: 2021/2/24 10:31
+     * @descritpion: todo
+     * @return todo
+    */
+    public List<NodeDto> allNode() {
+        if (!inited) {
+            throw new RuntimeException("service is initing");
+        }
+
+        if (cluster.masterAddress().equals(selfAddress)) {
+            return cluster.allNode();
+        }
+
+        IdRegionClient client = new IdRegionClient(cluster.masterAddress());
+        try {
+            return client.allNode();
+        } catch (Exception e) {
+            throw new RuntimeException("master is not run or initing, master address is " + cluster.masterAddress());
+        }
     }
 }

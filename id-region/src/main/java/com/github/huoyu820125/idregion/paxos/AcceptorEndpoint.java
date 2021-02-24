@@ -1,6 +1,6 @@
 package com.github.huoyu820125.idregion.paxos;
 
-import com.github.huoyu820125.idregion.domin.ProposeDataDTO;
+import com.github.huoyu820125.idregion.domin.ProposeDataDto;
 import com.github.huoyu820125.idstar.paxos.Acceptor;
 import com.github.huoyu820125.idstar.paxos.ProposeData;
 import org.slf4j.Logger;
@@ -21,10 +21,10 @@ public class AcceptorEndpoint {
     private Acceptor<String> acceptor = new Acceptor<>();
 
     @RequestMapping(value = "/propose", method = RequestMethod.GET)
-    public ProposeDataDTO propose(@RequestParam("serialNum") int serialNum) {
+    public ProposeDataDto propose(@RequestParam("serialNum") int serialNum) {
         ProposeData<String> data = new ProposeData<String>();
         if (acceptor.propose(serialNum, data)) {
-            ProposeDataDTO reply = new ProposeDataDTO();
+            ProposeDataDto reply = new ProposeDataDto();
             reply.setSerialNum(data.serialNum());
             reply.setValue(data.value());
             return reply;
@@ -34,7 +34,7 @@ public class AcceptorEndpoint {
     }
 
     @RequestMapping(value = "/accept", method = RequestMethod.POST)
-    public Boolean accept(@RequestBody ProposeDataDTO value) {
+    public Boolean accept(@RequestBody ProposeDataDto value) {
         ProposeData<String> data = new ProposeData<String>();
         data.setValue(value.getValue());
         data.setSerialNum(value.getSerialNum());

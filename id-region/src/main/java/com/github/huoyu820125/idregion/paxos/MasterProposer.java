@@ -108,12 +108,12 @@ public class MasterProposer implements InitializingBean, Runnable {
 
         if (selfAddress.equals(masterAddress)) {
             //初始化master
-            master.init(masterAddress, addressList);
+            master.init(selfAddress, masterAddress, addressList);
             return;
         }
 
         //注册结点到集群
-        slave.nodeRegister(masterAddress, selfAddress);
+        slave.init(selfAddress, masterAddress);
         return;
     }
 }

@@ -1,17 +1,14 @@
 package com.github.huoyu820125.idregion.service;
 
-import com.github.huoyu820125.idregion.client.IdRegionClient;
 import com.github.huoyu820125.idregion.constants.ERegisterCode;
 import com.github.huoyu820125.idregion.domin.Node;
-import com.github.huoyu820125.idregion.domin.NodeStateDto;
-import com.github.huoyu820125.idregion.domin.RegisterResultDTO;
+import com.github.huoyu820125.idregion.domin.RegisterResultDto;
+import com.github.huoyu820125.idstar.region.IdRegionClient;
+import com.github.huoyu820125.idstar.region.dto.NodeStateDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import java.util.*;
-import java.util.stream.Collectors;
+import org.springframework.stereotype.Component;
 
 /**
  * @Title 主结点
@@ -19,15 +16,17 @@ import java.util.stream.Collectors;
  * @CreateTime 2021/2/2 15:22
  * @Description: todo
  */
-@Service
+@Component
 public class Master {
     private final Logger log = LoggerFactory.getLogger(getClass());
 
     Boolean isInited = false;
-    List<Node> cluster = new ArrayList<>();
 
     @Autowired
     IdRegionService idRegionService;
+    
+    @Autowired
+    Cluster cluster;
 
     /**
      * @title: 给master结点分配结点id
@@ -38,11 +37,12 @@ public class Master {
      * @param addressList 集群结点列表
      * @return todo
     */
-    public void init(String masterAddress, String[] addressList) {
+    public void init(String selfAddress, String masterAddress, String[] addressList) {
+        cluster.master(masterAddress);
         //给master分配结点id
         Integer masterNodeId = idRegionService.readNodeId();
         if (null != masterNodeId) {
-            addNode(masterAddress, masterNodeId);
+            cluster.addNode(masterAddress, masterNodeId);
         }
 
         //询问集群中各结点希望获得的结点id
@@ -59,20 +59,20 @@ public class Master {
                 continue;
             }
 
-            addNode(addressList[i], state.getNodeId());
+            cluster.addNode(addressList[i], state.getNodeId());
         }
 
         if (null == masterNodeId) {
-            masterNodeId = nextNodeId();
+            masterNodeId = cluster.nextNodeId();
             if (null == masterNodeId) {
                 log.error("master没有结点id可用");
                 return;
             }
-            addNode(masterAddress, masterNodeId);
+            cluster.addNode(masterAddress, masterNodeId);
         }
         isInited = true;
 
-        idRegionService.init(masterNodeId);
+        idRegionService.init(masterNodeId, selfAddress);
 
         log.info("master初始化完成");
         return;
@@ -87,8 +87,8 @@ public class Master {
      * @param nodeId   结点id,集群内存在相同id时，拒绝注册
      * @return 结点id,结点已满时返回null
     */
-    public RegisterResultDTO nodeRegister(String address, Integer nodeId) {
-        RegisterResultDTO result = new RegisterResultDTO();
+    public RegisterResultDto nodeRegister(String address, Integer nodeId) {
+        RegisterResultDto result = new RegisterResultDto();
         if (!isInited) {
             log.info("master正在初始化，请稍后");
             result.setCode(ERegisterCode.masterIniting.value());
@@ -97,8 +97,7 @@ public class Master {
         }
 
         synchronized (this) {
-            Node node = cluster.stream().filter(n -> n.getAddress().equals(address))
-                    .findAny().orElse(null);
+            Node node = cluster.find(address);
             if (null != node) {
                 //已在结点列表中
                 if (null != node.getNodeId()) {
@@ -110,9 +109,7 @@ public class Master {
 
                 //第一次注册
                 if (null != nodeId) {
-                    Map<Integer, Boolean> idMap = cluster.stream().filter(n -> null != n.getNodeId())
-                            .collect(Collectors.toMap(n -> n.getNodeId(), n -> true));
-                    if (idMap.containsKey(nodeId)) {
+                    if (cluster.contains(nodeId)) {
                         log.warn("拒绝注册-{},存在相同结点id的结点", address);
                         result.setCode(ERegisterCode.existNodeId.value());
                         result.setReason("存在相同结点id的结点");
@@ -120,7 +117,7 @@ public class Master {
                     }
                 } else {
                     //分配一个id
-                    nodeId = nextNodeId();
+                    nodeId = cluster.nextNodeId();
                     if (null == nodeId) {
                         log.warn("拒绝注册-{},最多4个结点", address);
                         result.setCode(ERegisterCode.tooMoreNode.value());
@@ -137,60 +134,15 @@ public class Master {
             //第一次注册
             if (null == nodeId) {
                 //分配一个id
-                nodeId = nextNodeId();
+                nodeId = cluster.nextNodeId();
                 if (null == nodeId) {
                     log.warn("拒绝注册-{}结点数量已满", address);
                 }
             }
-            addNode(address, nodeId);
+            cluster.addNode(address, nodeId);
             result.setCode(ERegisterCode.success.value());
             result.setNodeId(nodeId);
             return result;
         }
     }
-
-    private Boolean addNode(String address, Integer nodeId) {
-        if (null != nodeId) {
-            Boolean exist = cluster.stream().filter(n -> nodeId.equals(n.getNodeId())).findAny().isPresent();
-            if (exist) {
-                log.warn("结点id已被使用,结点地址-{}", address);
-                return false;
-            }
-        }
-
-        Node node = new Node();
-        node.setNodeId(nodeId);
-        node.setAddress(address);
-        node.isInited(true);
-        cluster.add(node);
-        log.info("结点-{}加入集群", node.getAddress());
-        if (null != nodeId) {
-            log.info("结点-{}分配到结点id-{}", node.getAddress(), node.getNodeId());
-        }
-
-        return true;
-    }
-
-    /**
-     * @title: 下一个空闲结点id
-     * @author: SunQian
-     * @date: 2021/2/3 14:44
-     * @descritpion: todo
-
-     * @return todo
-     */
-    private Integer nextNodeId() {
-        //分配结点id;
-        Map<Integer, Boolean> idMap = cluster.stream().filter(n -> null != n.getNodeId())
-                .collect(Collectors.toMap(n -> n.getNodeId(), n -> true));
-        Integer nodeId = 1;
-        for (; nodeId <= 4; nodeId++) {
-            if (!idMap.containsKey(nodeId)) {
-                return nodeId;
-            }
-        }
-
-        return null;
-    }
-
 }

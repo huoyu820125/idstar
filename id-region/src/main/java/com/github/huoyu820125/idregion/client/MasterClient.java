@@ -1,10 +1,8 @@
 package com.github.huoyu820125.idregion.client;
 
 import com.alibaba.fastjson.JSONObject;
-import com.github.huoyu820125.idregion.domin.ProposeDataDTO;
-import com.github.huoyu820125.idregion.domin.RegisterResultDTO;
+import com.github.huoyu820125.idregion.domin.RegisterResultDto;
 import com.github.huoyu820125.idstar.http.Http;
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -32,7 +30,7 @@ public class MasterClient {
      * @param nodeId   结点id,集群内已存在相同id时，拒绝注册
      * @return 结点在集群内的id，最多4个结点，结点已满时，拒绝注册return null
      */
-    public RegisterResultDTO nodeRegister(String address, Integer nodeId) {
+    public RegisterResultDto nodeRegister(String address, Integer nodeId) {
         Http http = new Http();
         http = http.addUriParam("address", address);
         if (null != nodeId) {
@@ -42,6 +40,7 @@ public class MasterClient {
                 .response();
 
         JSONObject json = JSONObject.parseObject(response);
-        return json.toJavaObject(RegisterResultDTO.class);
+        return json.toJavaObject(RegisterResultDto.class);
     }
+
 }
