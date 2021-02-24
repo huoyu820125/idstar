@@ -35,11 +35,11 @@ import java.util.List;
 public class IdRegionService implements InitializingBean {
     private final Logger log = LoggerFactory.getLogger(getClass());
 
-    @Value("${idStart.idStruct.snLen:16}")
+    @Value("${idStar.idStruct.snLen:16}")
     protected Integer snLen;
-    @Value("${idStart.idStruct.raceNoLen:6}")
+    @Value("${idStar.idStruct.raceNoLen:6}")
     protected Integer raceNoLen;
-    @Value("${idStart.idStruct.regionNoLen:41}")
+    @Value("${idStar.idStruct.regionNoLen:41}")
     protected Integer regionNoLen;
     private IdStarConfig idStarConfig;
 
@@ -59,7 +59,7 @@ public class IdRegionService implements InitializingBean {
     @Override
     public void afterPropertiesSet() throws Exception {
         if (regionNoLen <= 2) {
-            throw RClassify.refused.exception("配置项idStart.idStruct.regionNoLen必须>2");
+            throw RClassify.refused.exception("配置项idStar.idStruct.regionNoLen必须>2");
         }
 
         idStarConfig = new IdStarConfig(snLen, raceNoLen, regionNoLen);

@@ -74,7 +74,9 @@ public class IdRegionClient {
     */
     public Long idle(Integer version) {
         Http http = new Http();
-        Long regionNo = (Long)http.get(endpoint + "/idstar/region/noman", 1000).response(Long.class);
+        Long regionNo = (Long)http.addUriParam("version", version)
+                .get(endpoint + "/idstar/region/noman", 1000)
+                .response(Long.class);
         return regionNo;
     }
 }
