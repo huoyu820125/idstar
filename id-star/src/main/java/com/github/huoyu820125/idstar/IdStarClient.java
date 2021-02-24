@@ -1,5 +1,7 @@
 package com.github.huoyu820125.idstar;
 
+import com.github.huoyu820125.idstar.core.DefaultRegionProvider;
+import com.github.huoyu820125.idstar.core.IdStarConfig;
 import com.github.huoyu820125.idstar.error.RClassify;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;

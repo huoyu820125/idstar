@@ -1,5 +1,6 @@
 package com.github.huoyu820125.idstar;
 
+import com.github.huoyu820125.idstar.core.IdStarConfig;
 import com.github.huoyu820125.idstar.error.RClassify;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
