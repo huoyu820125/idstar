@@ -1,10 +1,9 @@
 package com.github.huoyu820125.idstar.paxos;
 
 /**
- * @Title Acceptor客户端
- * @Athor SunQian
- * @CreateTime 2021/1/29 14:30
- * @Description: 负责实现与决策者通信的具体过程
+ * 决策者访问client定义,负责实现与决策者通信的具体过程
+ * @author SunQian
+ * @version 1.1
  */
 public interface IAcceptorClient<T> {
     void address(String address);

@@ -26,10 +26,8 @@ public class IdStarConfig {
     }
 
     /**
-     * @title:
+     * snLen + raceNoLen + regionNoLen不能超过63
      * @author: SunQian
-     * @date: 2021/2/24 17:01
-     * @descritpion: snLen + raceNoLen + regionNoLen不能超过63
      * @param snLen 必须>0
      * @param raceNoLen 必须>0
      * @param regionNoLen 必须>9

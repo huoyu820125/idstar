@@ -2,10 +2,9 @@ package com.github.huoyu820125.idstar.error;
 
 
 /**
- * @Title 调用异常
- * @Athor SunQian
- * @CreateTime 2020/5/18 18:48
- * @Description:
+ * 调用异常
+ * @author sq
+ * @version 1.0
  */
 public final class CallException extends RuntimeException{
     private RClassify classify;

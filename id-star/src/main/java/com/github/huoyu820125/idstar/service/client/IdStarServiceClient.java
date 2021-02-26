@@ -11,10 +11,9 @@ import org.slf4j.LoggerFactory;
 import java.util.List;
 
 /**
- * @Title AcceptorClient
- * @Athor SunQian
- * @CreateTime 2021/2/1 16:26
- * @Description: todo
+ * idStar服务访问client
+ * @author SunQian
+ * @version 1.1
  */
 public class IdStarServiceClient {
     private final Logger log = LoggerFactory.getLogger(getClass());

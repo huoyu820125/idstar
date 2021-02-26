@@ -3,10 +3,9 @@ package com.github.huoyu820125.idstar.http.constants;
 import org.apache.commons.lang3.StringUtils;
 
 /**
- * @Title EHttpMethod
- * @Athor SunQian
- * @CreateTime 2021/1/21 16:37
- * @Description: todo
+ * http方法
+ * @author SunQian
+ * @version 1.1
  */
 public enum EHttpMethod {
 

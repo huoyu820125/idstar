@@ -3,10 +3,9 @@ package com.github.huoyu820125.idstar.service.client.dto;
 import java.io.Serializable;
 
 /**
- * @Title 结点状态
- * @Athor SunQian
- * @CreateTime 2021/2/3 10:38
- * @Description: todo
+ * 结点状态
+ * @author SunQian
+ * @version 1.1
  */
 public class NodeStateDto implements Serializable {
     //是否已完成初始化

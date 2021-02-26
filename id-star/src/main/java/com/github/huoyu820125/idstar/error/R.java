@@ -6,6 +6,8 @@ import java.io.Serializable;
 
 /**
  * 函数返回值，调用结果
+ * @author sq
+ * @version 1.1
  */
 public final class R<T> implements Serializable {
     private static final long serialVersionUID = -7170024457221876233L;

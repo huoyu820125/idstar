@@ -8,10 +8,9 @@ import org.apache.commons.io.FileUtils;
 import java.io.*;
 
 /**
- * @Title 磁盘文件
- * @Athor SunQian
- * @CreateTime 2021/1/5 10:41
- * @Description: todo
+ * 磁盘文件
+ * @author SunQian
+ * @version 1.1
  */
 public class DiskFile {
     private File file;

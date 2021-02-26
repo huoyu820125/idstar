@@ -6,10 +6,9 @@ import java.io.IOException;
 import java.io.InputStream;
 
 /**
- * @Title 读取流
- * @Athor SunQian
- * @CreateTime 2020/11/25 18:40
- * @Description: todo
+ * 读取流
+ * @author SunQian
+ * @version 1.1
  */
 public class ReadStream {
     protected InputStream stream;
@@ -35,10 +34,8 @@ public class ReadStream {
     }
 
     /**
-     * @title: 跳多少长度，开始读取
+     * 跳多少长度，开始读取
      * @author: SunQian
-     * @date: 2020/11/25 18:57
-     * @descritpion: todo
      * @param length  期望跳过长度
      * @return 实际跳过长度
      */
@@ -54,10 +51,8 @@ public class ReadStream {
     }
 
     /**
-     * @title: 读数据
+     * 读数据到byte数组：当buffer写满时,或数据读完时,停止读取
      * @author: SunQian
-     * @date: 2020/11/25 18:47
-     * @descritpion: 当buffer写满时,或数据读完时,停止读取
      * @param buffer    写入buffer
      * @param offset    从buffer的什么位置开始写入
      * @param readSize  希望读取的长度

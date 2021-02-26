@@ -1,10 +1,9 @@
 package com.github.huoyu820125.idstar.stream;
 
 /**
- * @Title 大端序(网络序)序列化
- * @Athor SunQian
- * @CreateTime 2021/2/7 16:09
- * @Description: todo
+ * 大端序(网络序)序列化
+ * @author SunQian
+ * @version 1.1
  */
 public class Serializable {
     public static byte[] getStream(Integer num) {

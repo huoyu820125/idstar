@@ -12,10 +12,9 @@ import java.time.Instant;
 import java.util.List;
 
 /**
- * @Title DefaultRegionProvider
- * @Athor SunQian
- * @CreateTime 2021/2/24 11:18
- * @Description: todo
+ * 区号提供者默认实现，从idStar服务获取区号
+ * @author SunQian
+ * @version 1.1
  */
 public class DefaultRegionProvider implements IRegionProvider {
     private static Logger log = LoggerFactory.getLogger(IdStar.class);

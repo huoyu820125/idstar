@@ -6,10 +6,9 @@
 package com.github.huoyu820125.idstar.paxos;
 
 /**
- * @Title 提案
- * @Athor SunQian
- * @CreateTime 2021/2/1 15:49
- * @Description: todo
+ * 提案
+ * @author SunQian
+ * @version 1.1
  */
 public class ProposeData<T> {
     public void setSerialNum(int serialNum)

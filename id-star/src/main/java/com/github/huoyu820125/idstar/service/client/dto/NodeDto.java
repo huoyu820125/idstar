@@ -3,10 +3,9 @@ package com.github.huoyu820125.idstar.service.client.dto;
 import java.io.Serializable;
 
 /**
- * @Title 结点信息
- * @Athor SunQian
- * @CreateTime 2021/2/23 17:30
- * @Description: todo
+ * 结点信息
+ * @author SunQian
+ * @version 1.1
  */
 public class NodeDto implements Serializable {
     private Integer nodeId;

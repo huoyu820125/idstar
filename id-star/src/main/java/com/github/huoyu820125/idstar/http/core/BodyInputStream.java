@@ -11,10 +11,9 @@ import org.apache.http.util.EntityUtils;
 import java.io.IOException;
 
 /**
- * @Title BodyInputStream
- * @Athor SunQian
- * @CreateTime 2020/12/24 15:44
- * @Description: todo
+ * body读取流
+ * @author SunQian
+ * @version 1.1
  */
 public class BodyInputStream extends ReadStream {
     private HttpRequestBase request;

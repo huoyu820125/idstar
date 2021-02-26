@@ -33,10 +33,9 @@ import java.util.Map;
 
 
 /**
- * @Title Http sdk
- * @Athor SunQian
- * @CreateTime 2021/1/21 17:25
- * @Description: todo
+ * http操作api
+ * @author SunQian
+ * @version 1.1
  */
 public class Http {
     private static Logger log = LoggerFactory.getLogger(IdStar.class);

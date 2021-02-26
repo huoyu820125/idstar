@@ -3,10 +3,9 @@ package com.github.huoyu820125.idstar.error;
 import org.apache.commons.lang3.StringUtils;
 
 /**
- * @Title 返回结果情况分类
- * @Athor SunQian
- * @CreateTime 2020/5/18 19:00
- * @Description: todo
+ * 返回结果情况分类
+ * @author SunQian
+ * @version 1.1
  */
 public enum RClassify {
 

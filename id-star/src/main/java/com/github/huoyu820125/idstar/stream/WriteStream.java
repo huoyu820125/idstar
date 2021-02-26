@@ -7,10 +7,9 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 /**
- * @Title WriteStream
- * @Athor SunQian
- * @CreateTime 2021/1/28 11:43
- * @Description: todo
+ * 写数据流
+ * @author SunQian
+ * @version 1.1
  */
 public class WriteStream {
     protected OutputStream stream;

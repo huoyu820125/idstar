@@ -5,10 +5,9 @@ import org.apache.http.client.config.RequestConfig;
 import org.apache.http.impl.client.HttpClientBuilder;
 
 /**
- * @Title HttpConnectPool
- * @Athor SunQian
- * @CreateTime 2021/1/21 18:39
- * @Description: todo
+ * http操作client
+ * @author SunQian
+ * @version 1.1
  */
 public class HttpClient {
     private static HttpClient client;

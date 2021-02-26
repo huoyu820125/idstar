@@ -13,10 +13,9 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * @Title 提议者
- * @Athor SunQian
- * @CreateTime 2021/2/1 16:32
- * @Description: todo
+ * 提议者
+ * @author SunQian
+ * @version 1.1
  */
 public class Proposer<T> {
     private final Logger log = LoggerFactory.getLogger(getClass());

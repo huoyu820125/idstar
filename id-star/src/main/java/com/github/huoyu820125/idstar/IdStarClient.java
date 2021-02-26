@@ -8,10 +8,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * @Title idStar客户端
- * @Athor SunQian
- * @CreateTime 2021/1/20 14:07
- * @Description: todo
+ * idStar客户端
+ * @author SunQian
+ * @version 1.1
  */
 public class IdStarClient {
     private static Logger log = LoggerFactory.getLogger(IdStarClient.class);
@@ -21,10 +20,8 @@ public class IdStarClient {
     private static IdStar idStar;
 
     /**
-     * @title: 装配id星球单例
+     * 装配idStar客户端单例对象
      * @author: SunQian
-     * @date: 2021/1/20 14:32
-     * @descritpion: 使用用户自己实现的区号提供者
      * @param regionProvider 区域生产者(必填)
      * @param idStarConfig  星球配置(非必填)
      * @return todo
@@ -42,10 +39,8 @@ public class IdStarClient {
     }
 
     /**
-     * @title: assemble
+     * 装配idStar客户端单例对象：使用idStar服务做区号提供者
      * @author: SunQian
-     * @date: 2021/2/24 14:11
-     * @descritpion: 使用idStar服务做区号提供者
      * @param anyNodeAddress    idStar服务任意结点地址(必填)
      * @param idStarConfig      星球配置(非必填)
      * @return todo
@@ -63,10 +58,8 @@ public class IdStarClient {
     }
 
     /**
-     * @title: 单例对象
+     * 单例对象
      * @author: SunQian
-     * @date: 2021/1/20 14:34
-     * @descritpion: todo
      * @return todo
     */
     private static IdStar instance() {
@@ -93,10 +86,8 @@ public class IdStarClient {
     }
 
     /**
-     * @title: 在某个种族内产生一个唯一的id
+     * 产生一个在某个种族内唯一的id
      * @author: SunQian
-     * @date: 2021/1/20 14:34
-     * @descritpion: todo
      * @param raceNo id种族从0开始，不能超过idStarConfig.getMaxRaceNo()，
      *               可以用于区分业务类型，表等
      * @return todo

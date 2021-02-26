@@ -12,10 +12,9 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 /**
- * @Title 决策者
- * @Athor SunQian
- * @CreateTime 2021/2/1 17:33
- * @Description: todo
+ * 决策者
+ * @author SunQian
+ * @version 1.1
  */
 public class Acceptor<T> {
     private final Logger log = LoggerFactory.getLogger(getClass());
