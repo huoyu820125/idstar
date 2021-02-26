@@ -15,7 +15,7 @@ import java.util.List;
 /**
  * 提案者
  * @author SunQian
- * @version 1.1
+ * @version 2.0
  */
 public class Proposer<T> {
     private final Logger log = LoggerFactory.getLogger(getClass());

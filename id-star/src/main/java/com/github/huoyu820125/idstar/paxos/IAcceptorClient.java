@@ -3,7 +3,7 @@ package com.github.huoyu820125.idstar.paxos;
 /**
  * 决策者访问client定义,负责实现与决策者通信的具体过程
  * @author SunQian
- * @version 1.1
+ * @version 2.0
  */
 public interface IAcceptorClient<T> {
     void address(String address);

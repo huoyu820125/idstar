@@ -5,7 +5,7 @@ import org.apache.commons.lang3.RandomUtils;
 /**
  * 整数生长算法
  * @author SunQian
- * @version 1.1
+ * @version 2.0
  */
 public class IntegerAlgorithm implements IGrowAlgorithm<Integer> {
     /**

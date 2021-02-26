@@ -35,7 +35,7 @@ import java.util.Map;
 /**
  * http操作api
  * @author SunQian
- * @version 1.1
+ * @version 2.0
  */
 public class Http {
     private static Logger log = LoggerFactory.getLogger(IdStar.class);

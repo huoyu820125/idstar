@@ -10,7 +10,7 @@ import org.slf4j.LoggerFactory;
 /**
  * idStar客户端
  * @author SunQian
- * @version 1.1
+ * @version 2.0
  */
 public class IdStarClient {
     private static Logger log = LoggerFactory.getLogger(IdStarClient.class);

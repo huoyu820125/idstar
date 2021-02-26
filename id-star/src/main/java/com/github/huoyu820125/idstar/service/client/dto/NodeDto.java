@@ -5,7 +5,7 @@ import java.io.Serializable;
 /**
  * 结点信息
  * @author SunQian
- * @version 1.1
+ * @version 2.0
  */
 public class NodeDto implements Serializable {
     private Integer nodeId;

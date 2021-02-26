@@ -13,7 +13,7 @@ import java.util.List;
 /**
  * idStar服务访问client
  * @author SunQian
- * @version 1.1
+ * @version 2.0
  */
 public class IdStarServiceClient {
     private final Logger log = LoggerFactory.getLogger(getClass());

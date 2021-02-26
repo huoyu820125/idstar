@@ -7,7 +7,7 @@ import org.apache.http.impl.client.HttpClientBuilder;
 /**
  * http操作client
  * @author SunQian
- * @version 1.1
+ * @version 2.0
  */
 public class HttpClient {
     private static HttpClient client;

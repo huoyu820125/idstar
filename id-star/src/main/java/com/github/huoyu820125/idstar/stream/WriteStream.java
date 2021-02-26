@@ -9,7 +9,7 @@ import java.io.OutputStream;
 /**
  * 写数据流
  * @author SunQian
- * @version 1.1
+ * @version 2.0
  */
 public class WriteStream {
     protected OutputStream stream;

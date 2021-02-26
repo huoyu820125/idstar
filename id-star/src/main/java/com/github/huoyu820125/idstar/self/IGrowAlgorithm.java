@@ -3,7 +3,7 @@ package com.github.huoyu820125.idstar.self;
 /**
  * 生长算法，产生特征数据
  * @author SunQian
- * @version 1.1
+ * @version 2.0
  */
 public interface IGrowAlgorithm<T> {
     /**

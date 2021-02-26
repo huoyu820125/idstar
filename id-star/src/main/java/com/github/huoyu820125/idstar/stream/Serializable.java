@@ -3,7 +3,7 @@ package com.github.huoyu820125.idstar.stream;
 /**
  * 大端序(网络序)序列化
  * @author SunQian
- * @version 1.1
+ * @version 2.0
  */
 public class Serializable {
     public static byte[] getStream(Integer num) {

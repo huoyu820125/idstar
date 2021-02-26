@@ -14,7 +14,7 @@ import java.util.List;
 /**
  * 区号提供者默认实现，从idStar服务获取区号
  * @author SunQian
- * @version 1.1
+ * @version 2.0
  */
 public class DefaultRegionProvider implements IRegionProvider {
     private static Logger log = LoggerFactory.getLogger(IdStar.class);

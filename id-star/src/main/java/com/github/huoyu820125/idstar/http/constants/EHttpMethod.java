@@ -5,7 +5,7 @@ import org.apache.commons.lang3.StringUtils;
 /**
  * http方法
  * @author SunQian
- * @version 1.1
+ * @version 2.0
  */
 public enum EHttpMethod {
 
