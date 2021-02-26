@@ -23,10 +23,10 @@ public class Body implements IBody<Integer> {
     }
 
     @Override
-    public Integer touch() {
+    public Integer onTouch() {
         Http http = new Http();
         Integer featrue = (Integer)http
-                .get(endpoint + "/body/touch", 1000)
+                .get(endpoint + "/body/onTouch", 1000)
                 .response(Integer.class);
         return featrue;
     }

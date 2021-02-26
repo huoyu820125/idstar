@@ -20,7 +20,7 @@ public class BodyEndpoint {
     @Autowired
     MasterProposer proposer;
 
-    @RequestMapping(value = "/touch", method = RequestMethod.GET)
+    @RequestMapping(value = "/onTouch", method = RequestMethod.GET)
     public Integer touch() {
         return proposer.lastFeatrue();
     }

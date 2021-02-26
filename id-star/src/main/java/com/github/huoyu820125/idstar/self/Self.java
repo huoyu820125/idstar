@@ -105,7 +105,7 @@ public class Self<T> {
     private T touch(IBody<T> body, Integer tryCount) {
         for (; tryCount > 0; tryCount--) {
             try {
-                T featrue = body.touch();
+                T featrue = body.onTouch();
                 Thread.sleep(3000);
                 return featrue;
             } catch (Exception e) {
