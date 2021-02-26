@@ -54,10 +54,8 @@ public class Http {
     private Charset charset = StandardCharsets.UTF_8;
 
     /**
-     * @title: 收到回应结果后自动关闭链接
+     * 收到回应结果后自动关闭链接
      * @author: SunQian
-     * @date: 2021/1/22 15:48
-     * @descritpion: todo
      * @param autoClose
      * @return todo
      */
@@ -68,10 +66,8 @@ public class Http {
     }
 
     /**
-     * @title: 设置编码格式
+     * 设置编码格式
      * @author: SunQian
-     * @date: 2021/1/22 15:56
-     * @descritpion: todo
      * @param charset
      * @return todo
      */
@@ -83,10 +79,9 @@ public class Http {
 
 
     /**
-     * @title: 添加uri参数
+     * 添加uri参数
+     *  uri?uriParam=uriValue
      * @author: SunQian
-     * @date: 2021/1/22 10:43
-     * @descritpion: uri?uriParam=uriValue
      * @param name  参数名
      * @param value 参数值
      * @return todo
@@ -106,10 +101,8 @@ public class Http {
     }
 
     /**
-     * @title: 添加header参数
+     * 添加header参数
      * @author: SunQian
-     * @date: 2021/1/22 10:59
-     * @descritpion: todo
      * @param name
      * @param value
      * @return todo
@@ -126,10 +119,8 @@ public class Http {
     }
 
     /**
-     * @title: 设置body数据：json类型数据
+     * 设置body数据：json类型数据
      * @author: SunQian
-     * @date: 2021/1/22 11:14
-     * @descritpion: todo
      * @param jsonStr   body内容json字符串
      * @return todo
     */
@@ -145,10 +136,8 @@ public class Http {
     }
 
     /**
-     * @title: 设置body数据：表单类型数据
+     * 设置body数据：表单类型数据
      * @author: SunQian
-     * @date: 2021/1/22 11:20
-     * @descritpion: todo
      * @param formData
      * @return todo
     */
@@ -169,10 +158,8 @@ public class Http {
     }
 
     /**
-     * @title: 发起post请求
+     * 发起post请求
      * @author: SunQian
-     * @date: 2021/1/22 10:51
-     * @descritpion: todo
      * @param url       类似http://www.xxx.com/net_path
      * @param timeout   超时时间(ms)
      * @return todo
@@ -238,14 +225,6 @@ public class Http {
         return this;
     }
 
-    /**
-     * author: SunQian
-     * date: 2019/6/26 19:49
-     * title: uri参数转uri字符串
-     * descritpion: TODO
-     *
-     * @param paramMap return: TODO
-     */
     private URI uri(String url, Map<String, Object> paramMap) {
         URI uri = null;
         try {
@@ -291,11 +270,8 @@ public class Http {
     }
 
     /**
-     * @title: 回应数据
+     * 接收回应数据
      * @author: SunQian
-     * @date: 2021/1/22 15:45
-     * @descritpion: todo
-
      * @return todo
     */
     public String response() {
@@ -320,11 +296,9 @@ public class Http {
     }
 
     /**
-     * @title: 回应数据
+     * 接收回应数据
      * @author: SunQian
-     * @date: 2021/1/22 15:45
-     * @descritpion: todo
-     * @param clazz
+     * @param clazz 回应数据类型
      * @return todo
     */
     public Object response(Class<?> clazz) {
@@ -360,10 +334,8 @@ public class Http {
     }
 
     /**
-     * @title: 取body数据流
+     * 取body数据流
      * @author: SunQian
-     * @date: 2021/1/22 15:22
-     * @descritpion: todo
      * @return todo
     */
     public BodyInputStream bodyStream() {
@@ -386,10 +358,8 @@ public class Http {
     }
 
     /**
-     * @title: 关闭链接
+     * 关闭链接
      * @author: SunQian
-     * @date: 2021/1/22 15:45
-     * @descritpion: todo
      * @return todo
     */
     public void close() {

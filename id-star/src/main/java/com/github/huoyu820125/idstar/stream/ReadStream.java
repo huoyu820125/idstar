@@ -51,7 +51,8 @@ public class ReadStream {
     }
 
     /**
-     * 读数据到byte数组：当buffer写满时,或数据读完时,停止读取
+     * 读数据到byte数组
+     *  当buffer写满时,或数据读完时,停止读取
      * @author: SunQian
      * @param buffer    写入buffer
      * @param offset    从buffer的什么位置开始写入

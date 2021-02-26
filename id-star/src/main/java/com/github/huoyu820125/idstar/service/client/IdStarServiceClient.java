@@ -26,10 +26,8 @@ public class IdStarServiceClient {
     }
 
     /**
-     * @title: 取结点状态
+     * 取结点状态
      * @author: SunQian
-     * @date: 2021/2/3 10:10
-     * @descritpion: todo
      * @return 结点状态
      */
     public NodeStateDto nodeState(Integer tryCount) {
@@ -50,10 +48,8 @@ public class IdStarServiceClient {
     }
 
     /**
-     * @title: 获取所有结点
+     * 获取所有结点
      * @author: SunQian
-     * @date: 2021/2/23 17:41
-     * @descritpion: todo
      * @return todo
      */
     public List<NodeDto> allNode() {
@@ -64,10 +60,8 @@ public class IdStarServiceClient {
     }
 
     /**
-     * @title: 取无人占用的地区区号
+     * 取无人占用的地区区号
      * @author: SunQian
-     * @date: 2021/2/24 11:08
-     * @descritpion: todo
      * @param version
      * @return todo
     */

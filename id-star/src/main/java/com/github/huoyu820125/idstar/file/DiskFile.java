@@ -54,10 +54,8 @@ public class DiskFile {
     }
 
     /**
-     * @title: 文件大小
+     * 文件大小
      * @author: SunQian
-     * @date: 2020/12/22 14:51
-     * @descritpion: todo
      * @return todo
      */
     public Long size() {
@@ -85,10 +83,8 @@ public class DiskFile {
     }
 
     /**
-     * @title: 开始读文件
+     * 开始读文件
      * @author: SunQian
-     * @date: 2021/2/7 15:56
-     * @descritpion: todo
      * @param authClose
      * @return
     */
@@ -111,10 +107,8 @@ public class DiskFile {
     }
 
     /**
-     * @title: startWrite开始写入
+     * startWrite开始写入
      * @author: SunQian
-     * @date: 2021/2/7 15:55
-     * @descritpion: todo
      * @return todo
     */
     public WriteStream startWrite() {
@@ -122,10 +116,8 @@ public class DiskFile {
     }
 
     /**
-     * @title: 开始写入
+     * 开始写入
      * @author: SunQian
-     * @date: 2021/2/7 15:54
-     * @descritpion: todo
      * @param autoCreate    文件不存在时，自动创建
      * @param override      是否覆盖写入：true是
      * @return

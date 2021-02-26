@@ -29,10 +29,9 @@ public class WriteStream {
     }
 
     /**
-     * @title: 写数据
+     * 写数据
+     *  从offset开始,最多写入maxWriteSize数据
      * @author: SunQian
-     * @date: 2020/11/25 18:47
-     * @descritpion: 从offset开始,最多写入maxWriteSize数据
      * @param buffer   写入buffer
      * @param offset   从buffer的什么位置开始写入
      * @param maxSize  最大写入的长度，<=0时不限制，将buffer中offset开始之后的数据全部写入
@@ -66,10 +65,8 @@ public class WriteStream {
     }
 
     /**
-     * @title: 将输出流中的数据写入
+     * 将输出流中的数据写入
      * @author: SunQian
-     * @date: 2021/1/28 14:06
-     * @descritpion: todo
      * @param src 写入数据来源
      * @param maxSize  最大写入的长度，<=0时不限制，将buffer中offset开始之后的数据全部写入
      * @return 实际写入长度
@@ -79,10 +76,8 @@ public class WriteStream {
     }
 
     /**
-     * @title: 将输出流中的数据写入
+     * 将输出流中的数据写入
      * @author: SunQian
-     * @date: 2021/1/28 14:06
-     * @descritpion: todo
      * @param src 写入数据来源
      * @param maxSize  最大写入的长度，<=0时不限制，将buffer中offset开始之后的数据全部写入
      * @return 实际写入长度

@@ -27,6 +27,6 @@ public class ProposeData<T> {
     {
         return mValue;
     }
-    private int	mSerialNum;//流水号,1开始递增，保证全局唯一
+    private int	mSerialNum;//流水号(承诺的报酬),1开始递增
     private T	mValue;//提案内容
 }

@@ -26,11 +26,8 @@ public final class R<T> implements Serializable {
 
 
     /**
-     * @title: 构造不返回无数据的成功的回应
+     * 构造不返回无数据的成功的回应
      * @author: SunQian
-     * @date: 2020/10/28 14:48
-     * @descritpion: todo
-
      * @return todo
      */
     public R() {
@@ -42,10 +39,8 @@ public final class R<T> implements Serializable {
     }
 
     /**
-     * @title: 构造返回数据的成功的回应
+     * 构造返回数据的成功的回应
      * @author: SunQian
-     * @date: 2020/10/28 11:25
-     * @descritpion: todo
      * @param result 回应数据，可为null
      * @return todo
      */
@@ -58,10 +53,9 @@ public final class R<T> implements Serializable {
     }
 
     /**
-     * @title: 构造错误回应
+     * 构造错误回应：
+     *  用户不可直接构造错误回应，应使用RClassify枚举抛异常，由统一拦截器构造异常回应
      * @author: SunQian
-     * @date: 2020/10/28 11:25
-     * @descritpion: 用户不可直接构造错误回应，应使用RClassify枚举抛异常，由统一拦截器构造异常回应
      * @param classify
      * @param message
      * @param code
@@ -78,10 +72,9 @@ public final class R<T> implements Serializable {
     }
 
     /**
-     * @title: 构造错误回应，直接将异常信息抛给前端显示
+     * 构造错误回应，直接将异常信息抛给前端显示
+     *  用户不可直接构造错误回应，应使用RClassify枚举抛异常，由统一拦截器构造异常回应
      * @author: SunQian
-     * @date: 2020/10/28 11:26
-     * @descritpion: 用户不可直接构造错误回应，应使用RClassify枚举抛异常，由统一拦截器构造异常回应
      * @param e
      * @return todo
      */
@@ -90,10 +83,9 @@ public final class R<T> implements Serializable {
     }
 
     /**
-     * @title: 构造错误回应，对前端屏蔽异常信息
+     * 构造错误回应，对前端屏蔽异常信息
+     *  用户不可直接构造错误回应，应使用RClassify枚举抛异常，由统一拦截器构造异常回应
      * @author: SunQian
-     * @date: 2020/10/28 11:26
-     * @descritpion: 用户不可直接构造错误回应，应使用RClassify枚举抛异常，由统一拦截器构造异常回应
      * @param e
      * @param message   让前端显示的错误信息，对前端屏蔽异常本来的信息
      * @return todo

@@ -25,10 +25,7 @@ public class BodyInputStream extends ReadStream {
     }
 
     /**
-     * @title: BodyInputStream
      * @author: SunQian
-     * @date: 2020/12/24 16:14
-     * @descritpion: todo
      * @param request    请求对象
      * @param response    回应对象
      * @param closeByEnd    读取完成关闭流和http链接
@@ -49,10 +46,9 @@ public class BodyInputStream extends ReadStream {
     }
 
     /**
-     * @title: 读数据
+     * 读数据
+     *  当buffer写满时,或数据读完时,停止读取
      * @author: SunQian
-     * @date: 2020/12/24 15:59
-     * @descritpion: 当buffer写满时,或数据读完时,停止读取
      * @param buffer    写入buffer
      * @param offset    从buffer的什么位置开始写入
      * @param readSize  希望读取的长度

@@ -7,10 +7,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * @Title 自我感知器
- * @Athor SunQian
- * @CreateTime 2021/2/1 16:32
- * @Description: todo
+ * 自我意识
+ * @author SunQian
+ * @version 1.1
  */
 public class Self<T> {
     private final Logger log = LoggerFactory.getLogger(getClass());
@@ -22,10 +21,7 @@ public class Self<T> {
     private Integer growCount;
 
     /**
-     * @title: 构造
      * @author: SunQian
-     * @date: 2021/2/4 14:02
-     * @descritpion: todo
      * @param algorithm 生长算法
      * @param growCount 生长次数
      * @return todo
@@ -62,10 +58,8 @@ public class Self<T> {
     }
 
     /**
-     * @title: 身份
+     * 身份
      * @author: SunQian
-     * @date: 2021/2/4 14:46
-     * @descritpion: todo
      * @return 觉醒到的身份(身体)，null可能尚未觉醒
      */
     public IBody body() {
@@ -73,11 +67,9 @@ public class Self<T> {
     }
 
     /**
-     * @title: 上次长出的特征
+     * 上次长出的特征
      * @author: SunQian
-     * @date: 2021/2/4 14:55
-     * @descritpion: todo
-     * @return todo
+     * @return 上次长出的特征
     */
     public T lastFeatrue() {
         if (features.isEmpty()) {
@@ -88,10 +80,8 @@ public class Self<T> {
     }
 
     /**
-     * @title: 生长
+     * 生长
      * @author: SunQian
-     * @date: 2021/2/4 14:12
-     * @descritpion: todo
      * @return 长出的特征
     */
     private T grow() {
@@ -106,10 +96,8 @@ public class Self<T> {
     }
 
     /**
-     * @title: 触摸身体
+     * 触摸身体
      * @author: SunQian
-     * @date: 2021/2/4 14:18
-     * @descritpion: todo
      * @param body      身体
      * @param tryCount  没摸到，重试次数
      * @return 触摸到的特征
@@ -128,6 +116,12 @@ public class Self<T> {
         return null;
     }
 
+    /**
+     * 感知一个body是否是自己的身体
+     * @author: SunQian
+     * @param body
+     * @return todo
+    */
     private boolean isSelf(IBody<T> body) {
         Integer i = growCount;
         while (i > 0) {
